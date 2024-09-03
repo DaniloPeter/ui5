@@ -1,0 +1,20 @@
+{
+  "_version": "1.58.0",
+  "sap.app": {
+    "id": "ui5.testapp",
+    "type": "application",
+    "title": "Test Application",
+    "applicationVersion": {
+      "version": "1.0.0"
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "theme": "sap_belize",
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  }
+}
