@@ -1,6 +1,9 @@
-sap.ui.define(["sap/m/Text"], (Text) => {
+sap.ui.define(["sap/ui/core/mvc/XMLView"], (XMLView) => {
   "use strict";
-  new Text({
-    text: "hello world",
-  }).placeAt("content");
+
+  XMLView.create({
+    viewName: "ui5.testapp.view.App",
+  }).then((oView) => {
+    oView.placeAt("content");
+  });
 });
