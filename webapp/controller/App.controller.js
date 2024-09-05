@@ -1,26 +1,15 @@
 sap.ui.define(
-  [
-    "sap/ui/core/mvc/Controller",
-    "sap/m/MessageToast",
-    "sap/ui/model/json/JSONModel",
-  ],
+  ["sap/ui/core/mvc/Controller", "sap/m/MessageToast", l],
   (Controller, MessageToast) => {
     "use strict";
     return Controller.extend("ui5.testapp.controller.App", {
-      onInit() {
-        const oData = {
-          editMode: true,
-          data: {
-            name: "pete",
-          },
-        };
-
-        const oModel = new JSONModel(oData);
-        this.getView().setModel(oModel, "task");
+      onHelloPressed() {
+        MessageToast.show("hello");
       },
 
-      onHelloPressed() {
-        MessageToast("hello");
+      onEditMode() {
+        const oModel = this.getView().getModel("task");
+        oModel.setProperty("/editMode", !oModel.getProperty("/editMode"));
       },
     });
   }

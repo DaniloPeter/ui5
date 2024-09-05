@@ -7,5 +7,16 @@
         text="Say Hello"
         press=".onHelloPressed"
     />
-    <Text text="Hello world" />
+    <Text text="Hello " />
+    <Input
+        value="{task>/data/name}"
+        description="Hello {task>/data/name}"
+        valueLiveUpdate="true"
+        width="60%"
+        editable="{task>/editMode}"
+    />
+    <Button
+        text="edit mode"
+        press=".onEditMode"
+    />
 </mvc:View>
