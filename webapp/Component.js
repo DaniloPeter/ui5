@@ -1,28 +1,33 @@
-sap.ui.define(["sap/ui/core/UIComponent", "sap/ui"], (UIComponent) => {
-  "use strict";
+sap.ui.define(
+  [
+    "sap/ui/core/UIComponent",
+    "sap/ui/model/json/JSONModel",
+    "sap/ui/model/resource/ResourceModel",
+  ],
+  (UIComponent, JSONModel, ResourceModel) => {
+    "use strict";
 
-  return UIComponent.extend("ui5.testapp.Component", {
-    metadata: {
-      interfaces: ["sap.ui.core.IAsyncContentCreation"],
-      rootView: {
-        viewName: "ui5.testapp.view.App",
-        type: "XML",
-        id: "app",
+    return UIComponent.extend("ui5.testapp.Component", {
+      metadata: {
+        interfaces: ["sap.ui.core.IAsyncContentCreation"],
+        manifest: "json",
       },
-    },
 
-    init() {
-      UIComponent.prototype.init.apply(this, arguments);
+      init() {
+        UIComponent.prototype.init.apply(this, arguments);
 
-      const oData = {
-        editMode: true,
-        data: {
-          name: "pete",
-        },
-      };
+        const oData = {
+          editMode: false,
+          data: {
+            name: "pete",
+          },
+          responsible: "",
+          Task: [],
+        };
 
-      const oModel = new JSONModel(oData);
-      this.getView().setModel(oModel, "task");
-    },
-  });
-});
+        const oModel = new JSONModel(oData);
+        this.setModel(oModel, "data");
+      },
+    });
+  }
+);

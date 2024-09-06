@@ -2,21 +2,33 @@
     controllerName="ui5.testapp.controller.App"
     xmlns="sap.m"
     xmlns:mvc="sap.ui.core.mvc"
+    displayBlock="true"
 >
-    <Button
-        text="Say Hello"
-        press=".onHelloPressed"
-    />
-    <Text text="Hello " />
-    <Input
-        value="{task>/data/name}"
-        description="Hello {task>/data/name}"
-        valueLiveUpdate="true"
-        width="60%"
-        editable="{task>/editMode}"
-    />
-    <Button
-        text="edit mode"
-        press=".onEditMode"
-    />
+    <Shell>
+        <App>
+            <pages>
+                <Page>
+                    <content>
+                        <mvc:XMLView
+                            viewName="ui5.testapp.view.Filter"
+                            id="Filter"
+                            visible="{= !${data>/editMode}}"
+                        />
+                        <mvc:XMLView
+                            viewName="ui5.testapp.view.TaskList"
+                            id="TaskList"
+                        />
+                    </content>
+                    <footer>
+                        <Toolbar>
+                            <mvc:XMLView
+                                viewName="ui5.testapp.view.Footer"
+                                id="Footer"
+                            />
+                        </Toolbar>
+                    </footer>
+                </Page>
+            </pages>
+        </App>
+    </Shell>
 </mvc:View>

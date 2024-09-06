@@ -1,16 +1,7 @@
 sap.ui.define(
-  ["sap/ui/core/mvc/Controller", "sap/m/MessageToast", l],
-  (Controller, MessageToast) => {
+  ["sap/ui/core/mvc/Controller", "sap/m/MessageToast"],
+  (Controller) => {
     "use strict";
-    return Controller.extend("ui5.testapp.controller.App", {
-      onHelloPressed() {
-        MessageToast.show("hello");
-      },
-
-      onEditMode() {
-        const oModel = this.getView().getModel("task");
-        oModel.setProperty("/editMode", !oModel.getProperty("/editMode"));
-      },
-    });
+    return Controller.extend("ui5.testapp.controller.App", {});
   }
 );
