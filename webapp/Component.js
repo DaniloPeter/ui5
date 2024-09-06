@@ -21,6 +21,13 @@ sap.ui.define(
           data: {
             name: "pete",
           },
+          visible: {
+            taskName: true,
+            taskType: true,
+            responsible: true,
+            startDate: true,
+            endDate: true,
+          },
           responsible: "",
           Task: [],
         };

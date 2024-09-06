@@ -25,7 +25,12 @@
       }
     },
     "contentDensities": { "cozy": true, "compact": false },
-    "models": {},
+    "models": {
+      "task": {
+        "type": "sap.ui.model.json.JSONModel",
+        "uri": "TaskData.json"
+      }
+    },
     "rootView": {
       "viewName": "ui5.testapp.view.App",
       "type": "XML",
@@ -33,10 +38,6 @@
     },
     "resources": {
       "css": [{ "uri": "css/style.css" }]
-    },
-    "task": {
-      "type": "sap.ui.model.json.JSONModel",
-      "uri": "TaskData.json"
     }
   }
 }
