@@ -47,7 +47,39 @@
             <ColumnListItem>
                 <cells>
                     <Input
-                        value="{task>/taskName}" />
+                        editable="{= ${data>/editMode} }"
+                        value="{task>taskName}" />
+                    <Select
+                        id="taskType"
+                        selectedKey="{task>taskType}"
+                        change=".onTaskTypeChange"
+                        editable="{= ${data>/editMode} }">
+                        <items>
+                            <core:Item key="Тип 1" text="Тип 1" />
+                            <core:Item key="Тип 2" text="Тип 2" />
+                            <core:Item key="Тип 3" text="Тип 3" />
+                            <core:Item key="Тип 4" text="Тип 4" />
+                        </items>
+                    </Select>
+                    <HBox>
+                        <Input
+                            value="{task>responsible}"
+                            change=".onResponsibleChange"
+                            editable="{= ${data>/editMode} }"
+                        />
+                        <Button text="?" press=".onOpenResponsibleDialog"
+                            enabled="{= ${data>/editMode} }" />
+                    </HBox>
+                    <Input
+                        value="{task>startDate}"
+                        change=".onStartDateChange"
+                        editable="{= ${data>/editMode} }"
+                        liveChange=".onDateChange" />
+                    <Input
+                        value="{task>endDate}"
+                        change=".onEndDateChange"
+                        editable="{= ${data>/editMode} }"
+                        liveChange=".onDateChange" />
                 </cells>
             </ColumnListItem>
         </items>
