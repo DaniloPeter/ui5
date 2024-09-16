@@ -1,8 +1,6 @@
-<mvc:View
-    controllerName="ui5.testapp.controller.Filter"
+<core:FragmentDefinition
     xmlns="sap.m"
     xmlns:core="sap.ui.core"
-    xmlns:mvc="sap.ui.core.mvc"
 >
     <Panel headerText="Фильтр"
         class="sapUiResponsiveMargin"
@@ -44,8 +42,7 @@
                 <Button text="Применить" press=".onApplyFilter" />
                 <Button text="Сбросить" press=".onRefresh" />
             </HBox>
-
         </content>
 
     </Panel>
-</mvc:View>
+</core:FragmentDefinition>

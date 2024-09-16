@@ -2,6 +2,7 @@
     controllerName="ui5.testapp.controller.App"
     xmlns="sap.m"
     xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
     displayBlock="true"
 >
     <Shell>
@@ -9,15 +10,10 @@
             <pages>
                 <Page>
                     <content>
-                        <mvc:XMLView
-                            viewName="ui5.testapp.view.Filter"
-                            id="Filter"
-                            visible="{= !${data>/editMode}}"
-                        />
-                        <mvc:XMLView
-                            viewName="ui5.testapp.view.TaskList"
-                            id="TaskList"
-                        />
+                        <core:Fragment id="Filter"
+                            fragmentName="ui5.testapp.view.fragments.Filter" type="XML" />
+                        <core:Fragment id="TaskList"
+                            fragmentName="ui5.testapp.view.fragments.TaskList" type="XML" />
                     </content>
                     <footer>
                         <Toolbar>

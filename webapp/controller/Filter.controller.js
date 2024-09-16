@@ -65,16 +65,6 @@ sap.ui.define(
         const oTaskList0 = this.byId("taskList");
 
         console.log(oTaskList0);
-
-        const fragmentId = this.getView().createId("fr1");
-        const tab = Fragment.byId(fragmentId, "TaskListView");
-        const tab2 = Fragment.byId(fragmentId, "TaskList");
-        console.log(tab);
-        console.log(tab2);
-        const oTaskList2 = sap.ui.getCore().byId("taskList");
-        console.log(oTaskList2);
-        const oTaskList3 = this.getView().byId("taskList");
-        console.log(oTaskList3);
       },
 
       onRefresh() {
