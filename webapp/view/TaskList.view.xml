@@ -4,7 +4,7 @@
     xmlns:mvc="sap.ui.core.mvc"
 >
     <Table
-        id="taskList"
+        id="taskListTable"
         width="auto"
         items="{task>/Tasks}"
     >

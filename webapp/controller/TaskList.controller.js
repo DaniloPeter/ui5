@@ -3,8 +3,6 @@ sap.ui.define(
   (Controller, JSONModel) => {
     "use strict";
 
-    return Controller.extend("ui5.testapp.controller.TaskList", {
-      onInit() {},
-    });
+    return Controller.extend("ui5.testapp.controller.TaskList", {});
   }
 );

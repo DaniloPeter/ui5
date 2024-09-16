@@ -18,9 +18,6 @@ sap.ui.define(
 
         const oData = {
           editMode: false,
-          data: {
-            name: "pete",
-          },
           visible: {
             taskName: true,
             taskType: true,
@@ -29,7 +26,10 @@ sap.ui.define(
             endDate: true,
           },
           responsible: "",
-          Task: [],
+          startDate: "",
+          endDate: "",
+          taskType: 0,
+          Tasks: [],
         };
 
         const oModel = new JSONModel(oData);

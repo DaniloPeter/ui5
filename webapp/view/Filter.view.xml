@@ -10,7 +10,7 @@
     >
         <content>
             <HBox class="sapUiSmallMargin sapMFlexBoxJustifySpaceBetween">
-                <Select id="typeSelect" selectedKey="0">
+                <Select id="typeSelect" selectedKey="{data>/taskType}">
                     <items>
                         <core:Item key="0" text="All" />
                         <core:Item key="1" text="Тип 1" />
@@ -33,12 +33,12 @@
                 <Input
                     id="startDate"
                     placeholder="Дата постановки задачи"
-                    value="startDate"
+                    value="{data>/startDate}"
                     liveChange=".onDateChange" />
                 <Input
                     id="endDate"
                     placeholder="Дата окончания"
-                    value="endDate"
+                    value="{data>/endDate}"
                     liveChange=".onDateChange" />
                 <Button text="Очистить" press=".onClearFields" />
                 <Button text="Применить" press=".onApplyFilter" />
