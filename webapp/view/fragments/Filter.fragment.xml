@@ -19,19 +19,19 @@
                             text="All"
                         />
                         <core:Item
-                            key="1"
+                            key="Тип 1"
                             text="Тип 1"
                         />
                         <core:Item
-                            key="2"
+                            key="Тип 2"
                             text="Тип 2"
                         />
                         <core:Item
-                            key="3"
+                            key="Тип 3"
                             text="Тип 3"
                         />
                         <core:Item
-                            key="4"
+                            key="Тип 4"
                             text="Тип 4"
                         />
                     </items>

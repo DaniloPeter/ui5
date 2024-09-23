@@ -10,11 +10,10 @@
             <List
                 selectionChange=".onItemSelect"
                 mode="SingleSelectMaster"
+                items="{responsible>/Responsible}"
             >
                 <items>
-                    <StandardListItem title="Ответственный 1" />
-                    <StandardListItem title="Ответственный 2" />
-                    <StandardListItem title="Ответственный 3" />
+                    <ObjectListItem title="{responsible>name}" />
                 </items>
             </List>
         </content>

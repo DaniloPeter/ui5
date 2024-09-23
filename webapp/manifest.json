@@ -49,6 +49,10 @@
     },
     "contentDensities": { "cozy": true, "compact": false },
     "models": {
+      "responsible": {
+        "type": "sap.ui.model.json.JSONModel",
+        "uri": "Responsible.json"
+      },
       "task": {
         "type": "sap.ui.model.json.JSONModel",
         "uri": "TaskData.json"
