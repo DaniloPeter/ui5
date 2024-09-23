@@ -32,18 +32,58 @@ sap.ui.define(
 
       onDateChange(oEvent) {
         const inputField = oEvent.getSource();
-        let value = inputField.getValue();
-        value = value.replace(/[^\d.]/g, "");
-        if (value.length >= 2 && value.length < 3) {
-          value = value.slice(0, 2) + ".";
+        const value = inputField.getValue();
+        this._validateDate(value, inputField);
+      },
+      _validateDate(value, inputField) {
+        const datePattern = /^\d{2}\.\d{2}\.\d{4}$/; // Паттерн для проверки формата
+        if (value && !datePattern.test(value)) {
+          inputField.setValueState(sap.ui.core.ValueState.Error);
+          inputField.setValueStateText("Некорректный формат даты.");
+          return false;
         }
-        if (value.length >= 5 && value.length < 6) {
-          value = value.slice(0, 5) + ".";
+
+        if (value) {
+          const [day, month, year] = value.split(".").map(Number);
+
+          if (month < 1 || month > 12) {
+            inputField.setValueState(sap.ui.core.ValueState.Error);
+            inputField.setValueStateText("Месяц должен быть от 1 до 12.");
+            return false;
+          }
+
+          const daysInMonth = [
+            31,
+            this._isLeapYear(year) ? 29 : 28,
+            31,
+            30,
+            31,
+            30,
+            31,
+            31,
+            30,
+            31,
+            30,
+            31,
+          ];
+
+          if (day < 1 || day > daysInMonth[month - 1]) {
+            inputField.setValueState(sap.ui.core.ValueState.Error);
+            inputField.setValueStateText(
+              `Некорректный день для месяца ${month}.`
+            );
+            return false;
+          }
+
+          inputField.setValueState(sap.ui.core.ValueState.None);
+          return true; // Дата валидна
         }
-        if (value.length >= 10) {
-          value = value.slice(0, 10);
-        }
-        inputField.setValue(value);
+
+        return true; // Если поле пустое, считать валидным
+      },
+
+      _isLeapYear(year) {
+        return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
       },
 
       onClearFields() {
@@ -61,6 +101,10 @@ sap.ui.define(
         oStartDate.setValue("");
         oEndDate.setValue("");
         oTypeSelect.setSelectedKey("0");
+
+        oInputField.setValueState(sap.ui.core.ValueState.None);
+        oStartDate.setValueState(sap.ui.core.ValueState.None);
+        oEndDate.setValueState(sap.ui.core.ValueState.None);
       },
 
       onApplyFilter() {
@@ -75,6 +119,22 @@ sap.ui.define(
           this.createId("Filter"),
           "typeSelect"
         );
+
+        const isStartDateValid = this._validateDate(
+          oStartDate.getValue(),
+          oStartDate
+        );
+        const isEndDateValid = this._validateDate(
+          oEndDate.getValue(),
+          oEndDate
+        );
+
+        if (!isStartDateValid || !isEndDateValid) {
+          MessageToast.show(
+            "Пожалуйста, исправьте некорректные даты перед применением фильтров."
+          );
+          return; // Выходим, если даты не валидны
+        }
 
         // Извлекаем значения
         const sResponsible = oInputField.getValue();
@@ -112,23 +172,16 @@ sap.ui.define(
           aFilter.push(new Filter("taskType", FilterOperator.EQ, sTaskType));
         }
 
-        // Получаем таблицу и модель
         const oTable = Fragment.byId(
           this.createId("TaskList"),
           "taskListTable"
         );
         const oBinding = oTable.getBinding("items");
 
-        // Применяем фильтры
         oBinding.filter(aFilter);
         console.log(aFilter);
 
-        // Сообщаем о применении фильтров (по желанию)
-        if (aFilter.length > 0) {
-          MessageToast.show("Фильтры применены.");
-        } else {
-          MessageToast.show("Фильтры очищены.");
-        }
+        MessageToast.show("Фильтры применены.");
       },
       onRefresh() {
         this.onClearFields();

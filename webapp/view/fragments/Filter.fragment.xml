@@ -49,17 +49,19 @@
                         press=".onOpenDialog"
                     />
                 </HBox>
-                <Input
+                <DatePicker
                     id="startDate"
                     placeholder="Дата постановки задачи"
                     value="{data>/startDate}"
                     liveChange=".onDateChange"
+                    displayFormat="dd.MM.yyyy"
                 />
-                <Input
+                <DatePicker
                     id="endDate"
                     placeholder="Дата окончания"
                     value="{data>/endDate}"
                     liveChange=".onDateChange"
+                    displayFormat="dd.MM.yyyy"
                 />
                 <Button
                     text="Очистить"
