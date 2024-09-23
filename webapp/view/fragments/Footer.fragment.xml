@@ -1,23 +1,24 @@
-<mvc:View
-    controllerName="ui5.testapp.controller.Footer"
+<core:FragmentDefinition
     xmlns="sap.m"
     xmlns:core="sap.ui.core"
-    xmlns:mvc="sap.ui.core.mvc"
 >
     <Toolbar>
-        <Button text="Редактировать"
+        <Button
+            text="Редактировать"
             press=".onEdit"
             enabled="{= !${data>/editMode}}"
-        ></Button>
+        />
         <ToolbarSpacer />
-        <Button text="Сохранить"
+        <Button
+            text="Сохранить"
             press=".onSave"
             enabled="{= ${data>/editMode}}"
-        ></Button>
+        />
         <ToolbarSpacer />
-        <Button text="Экспорт в Excel"
+        <Button
+            text="Экспорт в Excel"
             press=".onExport"
             enabled="{= !${data>/editMode}}"
-        ></Button>
+        />
     </Toolbar>
-</mvc:View>
+</core:FragmentDefinition>

@@ -1,0 +1,32 @@
+<mvc:View
+    controllerName="ui5.testapp.controller.Home"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
+    displayBlock="true"
+>
+    <Shell>
+        <App>
+            <pages>
+                <Page id="homePage" title="Home" >
+                    <headerContent>
+                        <core:Fragment
+                            id="Filter"
+                            fragmentName="ui5.testapp.view.fragments.Filter" 
+                            type="XML" />
+                    </headerContent>
+                    <content>
+                        <core:Fragment id="TaskList"
+                            fragmentName="ui5.testapp.view.fragments.TaskList" type="XML" />
+                    </content>
+                    <footer>
+                        <Toolbar>
+                            <core:Fragment id="Footer"
+                                fragmentName="ui5.testapp.view.fragments.Footer" type="XML" />
+                        </Toolbar>
+                    </footer>
+                </Page>
+            </pages>
+        </App>
+    </Shell>
+</mvc:View>

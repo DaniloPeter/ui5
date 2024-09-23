@@ -17,6 +17,29 @@
     }
   },
   "sap.ui5": {
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "type": "View",
+        "viewType": "XML",
+        "path": "ui5.testapp.view",
+        "controlId": "app",
+        "controlAggregation": "pages"
+      },
+      "routes": [
+        {
+          "pattern": "",
+          "name": "home",
+          "target": "home"
+        }
+      ],
+      "targets": {
+        "home": {
+          "id": "homePage",
+          "name": "Home"
+        }
+      }
+    },
     "dependencies": {
       "minUI5Version": "1.108.0",
       "libs": {

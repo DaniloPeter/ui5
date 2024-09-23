@@ -4,9 +4,13 @@
 >
     <Dialog
         id="helpDialog"
-        title="Выбор ответственного">
+        title="Выбор ответственного"
+    >
         <content>
-            <List selectionChange=".onItemSelect" mode="SingleSelectMaster">
+            <List
+                selectionChange=".onItemSelect"
+                mode="SingleSelectMaster"
+            >
                 <items>
                     <StandardListItem title="Ответственный 1" />
                     <StandardListItem title="Ответственный 2" />
@@ -17,8 +21,8 @@
         <beginButton>
             <Button
                 text="Закрыть"
-                press=".onCloseDialog" />
+                press=".onCloseDialog"
+            />
         </beginButton>
     </Dialog>
-
 </core:FragmentDefinition>
