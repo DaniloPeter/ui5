@@ -8,22 +8,22 @@
     <Shell>
         <App>
             <pages>
-                <Page id="homePage" title="Home" >
+                <Page id="homePage" title="Home">
                     <headerContent>
-                        <core:Fragment
-                            id="Filter"
-                            fragmentName="ui5.testapp.view.fragments.Filter" 
-                            type="XML" />
+                        <VBox visible="{= !${data>/editMode}}">
+                            <core:Fragment
+                                id="Filter"
+                                fragmentName="ui5.testapp.view.fragments.Filter"
+                                type="XML" />
+                        </VBox>
                     </headerContent>
                     <content>
                         <core:Fragment id="TaskList"
                             fragmentName="ui5.testapp.view.fragments.TaskList" type="XML" />
                     </content>
                     <footer>
-                        <Toolbar>
-                            <core:Fragment id="Footer"
-                                fragmentName="ui5.testapp.view.fragments.Footer" type="XML" />
-                        </Toolbar>
+                        <core:Fragment id="Footer"
+                            fragmentName="ui5.testapp.view.fragments.Footer" type="XML" />
                     </footer>
                 </Page>
             </pages>

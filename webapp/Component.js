@@ -35,6 +35,9 @@ sap.ui.define(
         const oModel = new JSONModel(oData);
         this.setModel(oModel, "data");
 
+        const oColumnVisibilityModel = new JSONModel(oData.visible);
+        this.setModel(oColumnVisibilityModel, "columnVisibility");
+
         this.getRouter().initialize();
       },
     });

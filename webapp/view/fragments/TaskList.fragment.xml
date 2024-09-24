@@ -26,19 +26,19 @@
             </Toolbar>
         </headerToolbar>
         <columns>
-            <Column>
+            <Column visible="{columnVisibility>/taskName}">
                 <Text text="Название Задачи" />
             </Column>
-            <Column>
+            <Column visible="{columnVisibility>/taskType}">
                 <Text text="Тип Задачи" />
             </Column>
-            <Column>
+            <Column visible="{columnVisibility>/responsible}">
                 <Text text="Ответственный" />
             </Column>
-            <Column>
+            <Column visible="{columnVisibility>/startDate}">
                 <Text text="Дата Начала" />
             </Column>
-            <Column>
+            <Column visible="{columnVisibility>/endDate}">
                 <Text text="Дата Завершения" />
             </Column>
         </columns>
@@ -69,16 +69,16 @@
                         <Button text="?" press=".onOpenResponsibleDialog"
                             enabled="{= ${data>/editMode} }" />
                     </HBox>
-                    <Input
+                    <DatePicker
                         value="{task>startDate}"
-                        change=".onStartDateChange"
                         editable="{= ${data>/editMode} }"
-                        liveChange=".onDateChange" />
-                    <Input
+                        liveChange=".onTaskDateChange"
+                        displayFormat="dd.MM.yyyy" />
+                    <DatePicker
                         value="{task>endDate}"
-                        change=".onEndDateChange"
                         editable="{= ${data>/editMode} }"
-                        liveChange=".onDateChange" />
+                        liveChange=".onTaskDateChange"
+                        displayFormat="dd.MM.yyyy" />
                 </cells>
             </ColumnListItem>
         </items>
