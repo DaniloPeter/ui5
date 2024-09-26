@@ -6,7 +6,7 @@ sap.ui.define(
     "sap/ui/model/FilterOperator",
     "sap/ui/core/Fragment",
   ],
-  (Controller, MessageToast, Filter, FilterOperator, Fragment) => {
+  (Controller) => {
     "use strict";
     return Controller.extend("ui5.testapp.controller.App", {
       onInit: function () {

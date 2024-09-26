@@ -352,6 +352,32 @@ sap.ui.define(
         this.byId("responsibleDialog").close();
       },
 
+      onAddData() {
+        const oModel = this.getView().getModel("task");
+        const aData = oModel.getProperty("/Tasks") || [];
+
+        const newItem = {
+          taskName: "",
+          taskType: "0",
+          responsible: "",
+          startDate: this._getCurrentDate(),
+          endDate: "",
+        };
+
+        aData.unshift(newItem);
+
+        oModel.setProperty("/Tasks", aData);
+      },
+
+      _getCurrentDate() {
+        const now = new Date();
+        const day = String(now.getDate()).padStart(2, "0");
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const year = now.getFullYear();
+
+        return `${day}.${month}.${year}`;
+      },
+
       // Footer
 
       onExport() {
