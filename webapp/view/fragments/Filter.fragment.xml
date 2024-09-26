@@ -3,7 +3,6 @@
     xmlns:core="sap.ui.core"
 >
     <Panel
-        headerText="Фильтр"
         class="sapUiResponsiveMargin"
         width="auto"
     >

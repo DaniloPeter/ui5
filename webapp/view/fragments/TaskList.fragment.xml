@@ -47,7 +47,9 @@
                 <cells>
                     <Input
                         editable="{= ${data>/editMode} }"
-                        value="{task>taskName}" />
+                        value="{task>taskName}"
+                        change=".onTaskNameChange" />
+
                     <Select
                         id="taskType"
                         selectedKey="{task>taskType}"

@@ -35,16 +35,23 @@ sap.ui.define(
       },
 
       onDateChange(oEvent) {
-        const inputField = oEvent.getSource();
-        const value = inputField.getValue();
+        // const inputField = oEvent.getSource();
+        // const value = inputField.getValue();
         // this._validateDate(value, inputField);
-        const oStartDate = Fragment.byId(this.createId("Filter"), "startDate");
-        const oEndDate = Fragment.byId(this.createId("Filter"), "endDate");
-        oStartDate.setValueState(sap.ui.core.ValueState.None);
-        oEndDate.setValueState(sap.ui.core.ValueState.None);
+        // const oStartDate = Fragment.byId(this.createId("Filter"), "startDate");
+        // const oEndDate = Fragment.byId(this.createId("Filter"), "endDate");
+        // oStartDate.setValueState(sap.ui.core.ValueState.None);
+        // oEndDate.setValueState(sap.ui.core.ValueState.None);
       },
 
       _validateDate(value, inputField) {
+        console.log(value);
+        console.log(inputField);
+        if (value === null || value === undefined || value === "") {
+          inputField.setValueState(sap.ui.core.ValueState.Error);
+          inputField.setValueStateText("Некорректный формат даты.");
+          return false;
+        }
         const datePattern = /^\d{2}\.\d{2}\.\d{4}$/;
         if (value && !datePattern.test(value)) {
           inputField.setValueState(sap.ui.core.ValueState.Error);
@@ -128,21 +135,21 @@ sap.ui.define(
           "typeSelect"
         );
 
-        const isStartDateValid = this._validateDate(
-          oStartDate.getValue(),
-          oStartDate
-        );
-        const isEndDateValid = this._validateDate(
-          oEndDate.getValue(),
-          oEndDate
-        );
+        // const isStartDateValid = this._validateDate(
+        //   oStartDate.getValue(),
+        //   oStartDate
+        // );
+        // const isEndDateValid = this._validateDate(
+        //   oEndDate.getValue(),
+        //   oEndDate
+        // );
 
-        if (!isStartDateValid || !isEndDateValid) {
-          MessageToast.show(
-            "Пожалуйста, исправьте некорректные даты перед применением фильтров."
-          );
-          return;
-        }
+        // if (!isStartDateValid || !isEndDateValid) {
+        //   MessageToast.show(
+        //     "Пожалуйста, исправьте некорректные даты перед применением фильтров."
+        //   );
+        //   return;
+        // }
 
         const sResponsible = oInputField.getValue();
         const sStartDate = oStartDate.getValue();
@@ -198,7 +205,6 @@ sap.ui.define(
         );
         const oBinding = oTable.getBinding("items");
 
-        // Применяем фильтры
         oBinding.filter(aFilter);
         console.log(aFilter);
       },
@@ -208,14 +214,21 @@ sap.ui.define(
       onTaskDateChange(oEvent) {
         const inputField = oEvent.getSource();
         const value = inputField.getValue();
+
         this._validateDate(value, inputField);
-        const oStartDate = Fragment.byId(
-          this.createId("TaskList"),
-          "startDate"
-        );
-        const oEndDate = Fragment.byId(this.createId("TaskList"), "endDate");
-        oStartDate.setValueState(sap.ui.core.ValueState.None);
-        oEndDate.setValueState(sap.ui.core.ValueState.None);
+
+        const oColumnListItem = inputField.getParent();
+        const oBindingContext = oColumnListItem.getBindingContext("task");
+
+        const oStartDate = oColumnListItem.getCells()[3];
+        const oEndDate = oColumnListItem.getCells()[4];
+
+        if (oStartDate) {
+          oStartDate.setValueState(sap.ui.core.ValueState.None);
+        }
+        if (oEndDate) {
+          oEndDate.setValueState(sap.ui.core.ValueState.None);
+        }
       },
 
       onTaskNameChange(oEvent) {
@@ -376,12 +389,100 @@ sap.ui.define(
       },
 
       onSave() {
-        MessageToast.show("save");
+        const oTable = Fragment.byId(
+          this.createId("TaskList"),
+          "taskListTable"
+        );
+        const aItems = oTable.getItems();
+        let allValid = true;
+
+        aItems.forEach((oItem) => {
+          const oCells = oItem.getCells();
+
+          const oTaskNameInput = oCells[0];
+          const sTaskName = oTaskNameInput.getValue().trim();
+          if (sTaskName === "") {
+            oTaskNameInput.setValueState(sap.ui.core.ValueState.Error);
+            oTaskNameInput.setValueStateText(
+              "Название задания не может быть пустым."
+            );
+            allValid = false;
+          } else {
+            oTaskNameInput.setValueState(sap.ui.core.ValueState.None);
+          }
+
+          const oResponsibleInput = oCells[2].getItems()[0];
+          const sResponsible = oResponsibleInput.getValue().trim();
+          if (sResponsible === "") {
+            oResponsibleInput.setValueState(sap.ui.core.ValueState.Error);
+            oResponsibleInput.setValueStateText(
+              "Ответственный не может быть пустым."
+            );
+            allValid = false;
+          } else {
+            oResponsibleInput.setValueState(sap.ui.core.ValueState.None);
+          }
+
+          const oStartDateInput = oCells[3];
+          const sStartDate = oStartDateInput.getValue().trim();
+          const isStartDateValid = this._validateDate(
+            sStartDate,
+            oStartDateInput
+          );
+          allValid = allValid && isStartDateValid;
+
+          const oEndDateInput = oCells[4];
+          const sEndDate = oEndDateInput.getValue().trim();
+          const isEndDateValid = this._validateDate(sEndDate, oEndDateInput);
+          allValid = allValid && isEndDateValid;
+
+          const startDateValue = oStartDateInput.getValue();
+          const endDateValue = oEndDateInput.getValue();
+
+          const startDate = this._parseDate(startDateValue);
+          const endDate = this._parseDate(endDateValue);
+
+          if (
+            startDate &&
+            endDate &&
+            (endDate.year < startDate.year ||
+              (endDate.year === startDate.year &&
+                endDate.month < startDate.month) ||
+              (endDate.year === startDate.year &&
+                endDate.month === startDate.month &&
+                endDate.day < startDate.day))
+          ) {
+            oEndDateInput.setValueState(sap.ui.core.ValueState.Error);
+            allValid = false;
+          } else {
+            oEndDateInput.setValueState(sap.ui.core.ValueState.None);
+          }
+        });
+
+        if (!allValid) {
+          MessageToast.show(
+            "Пожалуйста, исправьте некорректные данные перед сохранением."
+          );
+          return;
+        }
+
         const oModel = this.getView().getModel("data");
         oModel.setProperty("/editMode", !oModel.getProperty("/editMode"));
+        MessageToast.show("Данные сохранены.");
+      },
+
+      _parseDate(dateStr) {
+        const parts = dateStr.split(".");
+        if (parts.length !== 3) return null;
+        return {
+          day: parseInt(parts[0], 10),
+          month: parseInt(parts[1], 10),
+          year: parseInt(parts[2], 10),
+        };
       },
 
       onEdit() {
+        this.onRefresh();
         MessageToast.show("edit");
         const oModel = this.getView().getModel("data");
         oModel.setProperty("/editMode", !oModel.getProperty("/editMode"));
