@@ -34,15 +34,15 @@ sap.ui.define(
         this.byId("helpDialog").close();
       },
 
-      onDateChange(oEvent) {
-        // const inputField = oEvent.getSource();
-        // const value = inputField.getValue();
-        // this._validateDate(value, inputField);
-        // const oStartDate = Fragment.byId(this.createId("Filter"), "startDate");
-        // const oEndDate = Fragment.byId(this.createId("Filter"), "endDate");
-        // oStartDate.setValueState(sap.ui.core.ValueState.None);
-        // oEndDate.setValueState(sap.ui.core.ValueState.None);
-      },
+      // onDateChange(oEvent) {
+      //   // const inputField = oEvent.getSource();
+      //   // const value = inputField.getValue();
+      //   // this._validateDate(value, inputField);
+      //   // const oStartDate = Fragment.byId(this.createId("Filter"), "startDate");
+      //   // const oEndDate = Fragment.byId(this.createId("Filter"), "endDate");
+      //   // oStartDate.setValueState(sap.ui.core.ValueState.None);
+      //   // oEndDate.setValueState(sap.ui.core.ValueState.None);
+      // },
 
       _validateDate(value, inputField) {
         console.log(value);
@@ -415,6 +415,7 @@ sap.ui.define(
       },
 
       onSave() {
+        // TODO: не подсвечивает ошибку коненой даты
         const oTable = Fragment.byId(
           this.createId("TaskList"),
           "taskListTable"
@@ -479,7 +480,17 @@ sap.ui.define(
                 endDate.day < startDate.day))
           ) {
             oEndDateInput.setValueState(sap.ui.core.ValueState.Error);
+            oStartDateInput.setValueState(sap.ui.core.ValueState.Error);
+            oStartDateInput.setValueStateText(
+              "Дата начала не может быть позже даты окончания"
+            );
             allValid = false;
+          } else {
+            oEndDateInput.setValueState(sap.ui.core.ValueState.None);
+            oStartDateInput.setValueState(sap.ui.core.ValueState.None);
+          }
+          if (!isEndDateValid) {
+            oEndDateInput.setValueState(sap.ui.core.ValueState.Error);
           } else {
             oEndDateInput.setValueState(sap.ui.core.ValueState.None);
           }
