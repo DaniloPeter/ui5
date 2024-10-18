@@ -9,14 +9,14 @@
         <App>
             <pages>
                 <Page id="homePage" title="Home">
-                    <headerContent>
+                    <!-- <headerContent>
                         <VBox visible="{= !${data>/editMode}}">
                             <core:Fragment
                                 id="Filter"
                                 fragmentName="ui5.testapp.view.fragments.Filter"
                                 type="XML" />
                         </VBox>
-                    </headerContent>
+                    </headerContent> -->
                     <content>
                         <core:Fragment id="TaskList"
                             fragmentName="ui5.testapp.view.fragments.TaskList" type="XML" />

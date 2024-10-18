@@ -104,15 +104,19 @@ sap.ui.define(
 
       onClearFields() {
         const oInputField = Fragment.byId(
-          this.createId("Filter"),
+          this.createId("TaskList"),
           "inputField"
         );
-        const oStartDate = Fragment.byId(this.createId("Filter"), "startDate");
-        const oEndDate = Fragment.byId(this.createId("Filter"), "endDate");
+        const oStartDate = Fragment.byId(
+          this.createId("TaskList"),
+          "startDate"
+        );
+        const oEndDate = Fragment.byId(this.createId("TaskList"), "endDate");
         const oTypeSelect = Fragment.byId(
-          this.createId("Filter"),
+          this.createId("TaskList"),
           "typeSelect"
         );
+
         oInputField.setValue("");
         oStartDate.setValue("");
         oEndDate.setValue("");
@@ -125,13 +129,16 @@ sap.ui.define(
 
       onApplyFilter() {
         const oInputField = Fragment.byId(
-          this.createId("Filter"),
+          this.createId("TaskList"),
           "inputField"
         );
-        const oStartDate = Fragment.byId(this.createId("Filter"), "startDate");
-        const oEndDate = Fragment.byId(this.createId("Filter"), "endDate");
+        const oStartDate = Fragment.byId(
+          this.createId("TaskList"),
+          "startDate"
+        );
+        const oEndDate = Fragment.byId(this.createId("TaskList"), "endDate");
         const oTypeSelect = Fragment.byId(
-          this.createId("Filter"),
+          this.createId("TaskList"),
           "typeSelect"
         );
 
@@ -170,15 +177,11 @@ sap.ui.define(
         }
 
         if (sStartDate) {
-          aFilter.push(
-            new Filter("startDate", FilterOperator.Contains, sStartDate)
-          );
+          aFilter.push(new Filter("startDate", FilterOperator.EQ, sStartDate));
         }
 
         if (sEndDate) {
-          aFilter.push(
-            new Filter("endDate", FilterOperator.Contains, sEndDate)
-          );
+          aFilter.push(new Filter("endDate", FilterOperator.EQ, sEndDate));
         }
 
         if (sTaskType && sTaskType != "0") {
