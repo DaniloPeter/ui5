@@ -12,204 +12,160 @@ sap.ui.define(
       oHelpDialog: null,
       oResponsibleDialog: null,
 
+      onInit() {},
+
       // Filter
 
-      async onOpenDialog() {
-        // TODO: Как сделать один диалог на все вызовы
-        this.oHelpDialog ??= await this.loadFragment({
-          name: "ui5.testapp.view.fragments.HelpDialog",
-        });
-        this.oHelpDialog.open();
+      onClear() {
+        this.byId("taskNameField").setValue();
+        this.byId("typeSelect").setSelectedKey();
+        this.byId("responsibleSelect").setSelectedKey();
+        this.byId("startDate").setValue();
+        this.byId("startDate").setMinDate();
+        this.byId("endDate").setValue();
+        this.byId("endDate").setMaxDate();
       },
 
-      onItemSelect(oEvent) {
-        const oSelectedItem = oEvent.getParameter("listItem");
-        const sResponsible = oSelectedItem.getTitle();
-        const oModel = this.getView().getModel("data");
-        oModel.setProperty("/responsible", sResponsible);
-        this.onCloseDialog();
+      onSearch(oEvent) {
+        const oFilterBar = oEvent.getSource();
+        const oTable = this.byId("taskListTable");
+        const aTableFilters = oFilterBar
+          .getFilterGroupItems()
+          .reduce(function (aResult, oFilterGroupItem) {
+            const oControl = oFilterGroupItem.getControl();
+            const sControlName = oControl.getMetadata().getName();
+            let aSelectedKeys = [];
+            switch (sControlName) {
+              case "sap.m.Input": {
+                aSelectedKeys = [oControl.getValue()];
+                break;
+              }
+              case "sap.m.Select": {
+                if (oControl.getSelectedKey() !== "0")
+                  aSelectedKeys = [oControl.getSelectedKey()];
+                break;
+              }
+              case "sap.m.DatePicker": {
+                aSelectedKeys = [oControl.getDateValue()];
+                debugger;
+                break;
+              }
+            }
+            aSelectedKeys = aSelectedKeys.filter((o) => o);
+
+            const aFilters = aSelectedKeys.map(function (sSelectedKey) {
+              let oFilter,
+                sPath = oFilterGroupItem.getName(),
+                oOperator = FilterOperator.Contains;
+
+              // TODO: Не получается сделать фильтр по дате, дата в формате dd.mm.yyyy не воспринимается
+              // TODO: как Date, и при .filter он видит строку вместо Data
+              // если преобразовать в Date данные из oData то отображение в datepicker ломается
+              // но фильтрация начинает работать
+
+              switch (sControlName) {
+                case "sap.m.Input": {
+                  oOperator = FilterOperator.Contains;
+                  break;
+                }
+                case "sap.m.Select": {
+                  if (sPath === "typeSelect") sPath = "taskType/key";
+                  if (sPath === "responsibleFilter") sPath = "responsible/key";
+
+                  oOperator = FilterOperator.EQ;
+                  break;
+                }
+                case "sap.m.DatePicker": {
+                  debugger;
+                  oOperator = FilterOperator.EQ;
+                  break;
+                }
+              }
+
+              oFilter = new Filter({
+                path: sPath,
+                operator: oOperator,
+                value1: sSelectedKey,
+              });
+              return oFilter;
+            });
+
+            if (aSelectedKeys.length > 0) {
+              aResult.push(
+                new Filter({
+                  filters: aFilters,
+                  and: false,
+                })
+              );
+            }
+
+            return aResult;
+          }, []);
+        const test = oTable.getBinding("items");
+        debugger;
+        oTable.getBinding("items").filter(aTableFilters);
       },
 
-      onCloseDialog() {
-        this.byId("helpDialog").close();
+      onReset(oEvent) {
+        this.onClear(oEvent);
+        this.onSearch(oEvent);
       },
 
-      // onDateChange(oEvent) {
-      //   // const inputField = oEvent.getSource();
-      //   // const value = inputField.getValue();
-      //   // this._validateDate(value, inputField);
-      //   // const oStartDate = Fragment.byId(this.createId("Filter"), "startDate");
-      //   // const oEndDate = Fragment.byId(this.createId("Filter"), "endDate");
-      //   // oStartDate.setValueState(sap.ui.core.ValueState.None);
-      //   // oEndDate.setValueState(sap.ui.core.ValueState.None);
-      // },
-
-      _validateDate(value, inputField) {
-        console.log(value);
-        console.log(inputField);
-        if (value === null || value === undefined || value === "") {
-          inputField.setValueState(sap.ui.core.ValueState.Error);
-          inputField.setValueStateText("Некорректный формат даты.");
-          return false;
-        }
-        const datePattern = /^\d{2}\.\d{2}\.\d{4}$/;
-        if (value && !datePattern.test(value)) {
-          inputField.setValueState(sap.ui.core.ValueState.Error);
-          inputField.setValueStateText("Некорректный формат даты.");
-          return false;
-        }
-
-        if (value) {
-          const [day, month, year] = value.split(".").map(Number);
-
-          if (month < 1 || month > 12) {
-            inputField.setValueState(sap.ui.core.ValueState.Error);
-            inputField.setValueStateText("Месяц должен быть от 1 до 12.");
-            return false;
+      onDateChange(oEvent) {
+        const datePicker = oEvent.getSource();
+        const datePickerParent = datePicker.getParent().getMetadata().getName();
+        switch (datePickerParent) {
+          case "sap.ui.comp.filterbar.FilterGroupItem": {
+            const datePickerId = datePicker.getId().includes("startDate")
+              ? "startDate"
+              : "endDate";
+            const otherDatePickerId =
+              datePickerId === "startDate" ? "endDate" : "startDate";
+            const oDate = datePicker.getDateValue();
+            const oOtherDate = this.byId(otherDatePickerId);
+            if (oDate) {
+              switch (otherDatePickerId) {
+                case "endDate": {
+                  oOtherDate.setMinDate(oDate);
+                  break;
+                }
+                case "startDate": {
+                  oOtherDate.setMaxDate(oDate);
+                  break;
+                }
+              }
+            }
+            break;
           }
+          case "sap.m.ColumnListItem": {
+            const datePickerId = datePicker.getId().includes("startDate")
+              ? "startDate"
+              : "endDate";
+            const otherDatePickerId =
+              datePickerId === "startDate" ? "endDate" : "startDate";
 
-          const daysInMonth = [
-            31,
-            this._isLeapYear(year) ? 29 : 28,
-            31,
-            30,
-            31,
-            30,
-            31,
-            31,
-            30,
-            31,
-            30,
-            31,
-          ];
+            const aDatePickerCells = datePicker.getParent().getCells();
 
-          if (day < 1 || day > daysInMonth[month - 1]) {
-            inputField.setValueState(sap.ui.core.ValueState.Error);
-            inputField.setValueStateText(
-              `Некорректный день для месяца ${month}.`
-            );
-            return false;
+            const sDateSId = aDatePickerCells
+              .filter((cell) => cell.sId.includes(otherDatePickerId))
+              .map((e) => e.sId)
+              .join("");
+            const oDate = datePicker.getDateValue();
+            const oOtherDate = this.byId(sDateSId);
+            if (oDate) {
+              switch (otherDatePickerId) {
+                case "endDate": {
+                  oOtherDate.setMinDate(oDate);
+                  break;
+                }
+                case "startDate": {
+                  oOtherDate.setMaxDate(oDate);
+                  break;
+                }
+              }
+            }
           }
-
-          inputField.setValueState(sap.ui.core.ValueState.None);
-          return true;
         }
-
-        return true;
-      },
-
-      _isLeapYear(year) {
-        return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-      },
-
-      onClearFields() {
-        const oInputField = Fragment.byId(
-          this.createId("TaskList"),
-          "inputField"
-        );
-        const oStartDate = Fragment.byId(
-          this.createId("TaskList"),
-          "startDate"
-        );
-        const oEndDate = Fragment.byId(this.createId("TaskList"), "endDate");
-        const oTypeSelect = Fragment.byId(
-          this.createId("TaskList"),
-          "typeSelect"
-        );
-
-        oInputField.setValue("");
-        oStartDate.setValue("");
-        oEndDate.setValue("");
-        oTypeSelect.setSelectedKey("0");
-
-        oInputField.setValueState(sap.ui.core.ValueState.None);
-        oStartDate.setValueState(sap.ui.core.ValueState.None);
-        oEndDate.setValueState(sap.ui.core.ValueState.None);
-      },
-
-      onApplyFilter() {
-        const oInputField = Fragment.byId(
-          this.createId("TaskList"),
-          "inputField"
-        );
-        const oStartDate = Fragment.byId(
-          this.createId("TaskList"),
-          "startDate"
-        );
-        const oEndDate = Fragment.byId(this.createId("TaskList"), "endDate");
-        const oTypeSelect = Fragment.byId(
-          this.createId("TaskList"),
-          "typeSelect"
-        );
-
-        // const isStartDateValid = this._validateDate(
-        //   oStartDate.getValue(),
-        //   oStartDate
-        // );
-        // const isEndDateValid = this._validateDate(
-        //   oEndDate.getValue(),
-        //   oEndDate
-        // );
-
-        // if (!isStartDateValid || !isEndDateValid) {
-        //   MessageToast.show(
-        //     "Пожалуйста, исправьте некорректные даты перед применением фильтров."
-        //   );
-        //   return;
-        // }
-
-        const sResponsible = oInputField.getValue();
-        const sStartDate = oStartDate.getValue();
-        const sEndDate = oEndDate.getValue();
-        const sTaskType = oTypeSelect.getSelectedKey();
-
-        console.log("Responsible:", sResponsible);
-        console.log(sStartDate);
-        console.log("End Date:", sEndDate);
-        console.log(sTaskType);
-
-        const aFilter = [];
-
-        if (sResponsible) {
-          aFilter.push(
-            new Filter("responsible", FilterOperator.Contains, sResponsible)
-          );
-        }
-
-        if (sStartDate) {
-          aFilter.push(new Filter("startDate", FilterOperator.EQ, sStartDate));
-        }
-
-        if (sEndDate) {
-          aFilter.push(new Filter("endDate", FilterOperator.EQ, sEndDate));
-        }
-
-        if (sTaskType && sTaskType != "0") {
-          aFilter.push(new Filter("taskType", FilterOperator.EQ, sTaskType));
-        }
-
-        const oTable = Fragment.byId(
-          this.createId("TaskList"),
-          "taskListTable"
-        );
-        const oBinding = oTable.getBinding("items");
-
-        oBinding.filter(aFilter);
-        console.log(aFilter);
-
-        MessageToast.show("Фильтры применены.");
-      },
-      onRefresh() {
-        this.onClearFields();
-        const aFilter = [];
-        const oTable = Fragment.byId(
-          this.createId("TaskList"),
-          "taskListTable"
-        );
-        const oBinding = oTable.getBinding("items");
-
-        oBinding.filter(aFilter);
-        console.log(aFilter);
       },
 
       // TaskList
@@ -356,8 +312,9 @@ sap.ui.define(
       },
 
       onAddData() {
-        const oModel = this.getView().getModel("task");
-        const aData = oModel.getProperty("/Tasks") || [];
+        const oModel = this.getView().getModel("data");
+        debugger;
+        const aData = oModel.getProperty("/tasks") || [];
 
         const newItem = {
           taskName: "",

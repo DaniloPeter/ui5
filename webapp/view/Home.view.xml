@@ -3,30 +3,183 @@
     xmlns="sap.m"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns:core="sap.ui.core"
-    displayBlock="true"
->
-    <Shell>
-        <App>
-            <pages>
-                <Page id="homePage" title="Home">
-                    <!-- <headerContent>
-                        <VBox visible="{= !${data>/editMode}}">
-                            <core:Fragment
-                                id="Filter"
-                                fragmentName="ui5.testapp.view.fragments.Filter"
-                                type="XML" />
-                        </VBox>
-                    </headerContent> -->
-                    <content>
-                        <core:Fragment id="TaskList"
-                            fragmentName="ui5.testapp.view.fragments.TaskList" type="XML" />
-                    </content>
-                    <footer>
-                        <core:Fragment id="Footer"
-                            fragmentName="ui5.testapp.view.fragments.Footer" type="XML" />
-                    </footer>
-                </Page>
-            </pages>
-        </App>
-    </Shell>
+    xmlns:f="sap.f"
+    xmlns:fb="sap.ui.comp.filterbar"
+    displayBlock="true">
+
+    <f:DynamicPage showFooter="true" id="homePage" headerPinned="true">
+        <f:header>
+            <f:DynamicPageHeader pinnable="true">
+                <f:content>
+                    <!-- Фильтры -->
+                    <fb:FilterBar
+                        id="filterBar"
+                        showClearOnFB="true"
+                        showRestoreOnFB="true"
+                        showFilterConfiguration="false"
+                        useToolbar="false"
+                        search=".onSearch"
+                        clear=".onClear"
+                        reset=".onReset"
+                    >
+                        <fb:filterGroupItems>
+
+                            <fb:FilterGroupItem name="taskName" label="Названия задачи"
+                                groupName="Tasks"
+                                visibleInFilterBar="true">
+                                <fb:control>
+                                    <Input id="taskNameField" placeholder="Названия задачи" />
+                                </fb:control>
+                            </fb:FilterGroupItem>
+
+                            <fb:FilterGroupItem name="typeSelect" label="Тип задачи"
+                                groupName="Tasks"
+                                visibleInFilterBar="true">
+                                <fb:control>
+                                    <Select forceSelection="false" id="typeSelect"
+                                        items="{
+                                        path: 'taskType>/TaskType'
+                                    }"
+                                        selectedKey="{data>/TaskType}">
+                                        <core:Item
+                                            key="{taskType>key}"
+                                            text="{taskType>name}" />
+                                    </Select>
+                                </fb:control>
+                            </fb:FilterGroupItem>
+
+                            <fb:FilterGroupItem name="responsibleFilter"
+                                label="Ответственный"
+                                visibleInFilterBar="true"
+                                groupName="Tasks">
+                                <fb:control>
+                                    <Select forceSelection="false" id="responsibleSelect"
+                                        items="{
+                                    path: 'responsible>/Responsible'
+                                }"
+                                        selectedKey="{data>/responsible}">
+                                        <core:Item
+                                            key="{responsible>key}"
+                                            text="{responsible>name}" />
+                                    </Select>
+                                </fb:control>
+                            </fb:FilterGroupItem>
+
+                            <fb:FilterGroupItem name="startDate" label="Дата постановки задачи"
+                                visibleInFilterBar="true" groupName="Tasks">
+                                <fb:control>
+                                    <DatePicker id="startDate"
+                                        change=".onDateChange"
+                                        placeholder="Дата постановки задачи"
+                                        value="{data>/startDate}"
+                                        displayFormat="dd.MM.yyyy" />
+                                </fb:control>
+                            </fb:FilterGroupItem>
+
+                            <fb:FilterGroupItem name="endDate" label="Дата завершения задачи"
+                                visibleInFilterBar="true" groupName="Tasks">
+                                <fb:control>
+                                    <DatePicker id="endDate"
+                                        change="onDateChange"
+                                        placeholder="Дата завершения задачи"
+                                        value="{data>/endDate}"
+                                        displayFormat="dd.MM.yyyy" />
+                                </fb:control>
+                            </fb:FilterGroupItem>
+
+                        </fb:filterGroupItems>
+                    </fb:FilterBar>
+                </f:content>
+            </f:DynamicPageHeader>
+        </f:header>
+
+        <!-- Таблица задач -->
+        <f:content>
+            <Table id="taskListTable" width="auto" items="{data>/tasks}">
+                <headerToolbar>
+                    <Toolbar>
+                        <Title text="Задачи" />
+                        <ToolbarSpacer />
+                        <Button icon="sap-icon://add" id="addDataButton"
+                            press=".onAddData" enabled="{= ${data>/editMode}}" />
+                        <Button icon="sap-icon://action-settings" id="settingsButton"
+                            press=".onSettings" enabled="{= !${data>/editMode}}" />
+                    </Toolbar>
+                </headerToolbar>
+                <columns>
+                    <Column visible="{columnVisibility>/taskName}">
+                        <Text text="Название Задачи" />
+                    </Column>
+                    <Column visible="{columnVisibility>/taskType}">
+                        <Text text="Тип Задачи" />
+                    </Column>
+                    <Column visible="{columnVisibility>/responsible}">
+                        <Text text="Ответственный" />
+                    </Column>
+                    <Column visible="{columnVisibility>/startDate}">
+                        <Text text="Дата Начала" />
+                    </Column>
+                    <Column visible="{columnVisibility>/endDate}">
+                        <Text text="Дата Завершения" />
+                    </Column>
+                </columns>
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <Input editable="{= ${data>/editMode}}"
+                                value="{data>taskName}" change=".onTaskNameChange" />
+                            <Select id="taskType"
+                                editable="{= ${data>/editMode}}"
+                                items="{
+                                path: 'taskType>/TaskType'
+                            }"
+                                selectedKey="{data>taskType/key}">
+                                <core:Item
+                                    key="{taskType>key}"
+                                    text="{taskType>name}" />
+                            </Select>
+                            <!-- <Select id="taskType1" selectedKey="{data>taskType/key}"
+                                change=".onTaskTypeChange"
+                                editable="{= ${data>/editMode}}">
+                                <items>
+                                    <core:Item key="1" text="Тип 1" />
+                                    <core:Item key="2" text="Тип 2" />
+                                    <core:Item key="3" text="Тип 3" />
+                                    <core:Item key="4" text="Тип 4" />
+                                </items>
+                            </Select> -->
+                            <Select id="responsible"
+                                editable="{= ${data>/editMode}}"
+                                items="{
+                            path: 'responsible>/Responsible'
+                        }"
+                                selectedKey="{data>responsible/key}">
+                                <core:Item
+                                    key="{responsible>key}"
+                                    text="{responsible>name}" />
+                            </Select>
+                            <DatePicker
+                                id="startDateItem"
+                                value="{data>startDate}"
+                                editable="{= !${data>/editMode}}"
+                                change=".onDateChange"
+                                displayFormat="dd.MM.yyyy" />
+                            <DatePicker
+                                id="endDateItem"
+                                value="{data>endDate}"
+                                editable="{= !${data>/editMode}}"
+                                change=".onDateChange"
+                                displayFormat="dd.MM.yyyy" />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </f:content>
+        <f:footer>
+            <core:Fragment id="Footer" fragmentName="ui5.testapp.view.fragments.Footer"
+                type="XML" />
+        </f:footer>
+    </f:DynamicPage>
+
+
 </mvc:View>

@@ -44,7 +44,9 @@
       "minUI5Version": "1.108.0",
       "libs": {
         "sap.ui.core": {},
-        "sap.m": {}
+        "sap.ui.comp": {},
+        "sap.m": {},
+        "sap.f": {}
       }
     },
     "contentDensities": { "cozy": true, "compact": false },
@@ -53,9 +55,9 @@
         "type": "sap.ui.model.json.JSONModel",
         "uri": "Responsible.json"
       },
-      "task": {
+      "taskType": {
         "type": "sap.ui.model.json.JSONModel",
-        "uri": "TaskData.json"
+        "uri": "TaskType.json"
       }
     },
     "rootView": {
