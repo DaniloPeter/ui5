@@ -13,6 +13,7 @@
                 <f:content>
                     <!-- Фильтры -->
                     <fb:FilterBar
+                        visible="{= !${data>/editMode}}"
                         id="filterBar"
                         showClearOnFB="true"
                         showRestoreOnFB="true"
@@ -160,14 +161,14 @@
                             </Select>
                             <DatePicker
                                 id="startDateItem"
-                                value="{data>startDate}"
-                                editable="{= !${data>/editMode}}"
+                                dateValue="{data>startDate}"
+                                editable="{= ${data>/editMode}}"
                                 change=".onDateChange"
                                 displayFormat="dd.MM.yyyy" />
                             <DatePicker
                                 id="endDateItem"
-                                value="{data>endDate}"
-                                editable="{= !${data>/editMode}}"
+                                dateValue="{data>endDate}"
+                                editable="{= ${data>/editMode}}"
                                 change=".onDateChange"
                                 displayFormat="dd.MM.yyyy" />
                         </cells>
