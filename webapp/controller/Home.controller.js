@@ -57,14 +57,6 @@ sap.ui.define(
                 sPath = oFilterGroupItem.getName(),
                 oOperator = FilterOperator.Contains;
 
-              // TODO: Не получается сделать фильтр по дате, дата в формате dd.mm.yyyy не воспринимается
-              // TODO: как Date, и при .filter он видит строку вместо Data
-              // если преобразовать в Date данные из oData то отображение в datepicker ломается
-              // но фильтрация начинает работать
-              // если менять значения, фильрация перестает работать опять
-
-              // писать свою функцию фильтрации даты
-
               switch (sControlName) {
                 case "sap.m.Input": {
                   oOperator = FilterOperator.Contains;
@@ -103,7 +95,6 @@ sap.ui.define(
 
             return aResult;
           }, []);
-        const test = oTable.getBinding("items");
 
         oTable.getBinding("items").filter(aTableFilters);
       },
@@ -114,6 +105,7 @@ sap.ui.define(
       },
 
       onDateChange(oEvent) {
+        debugger;
         const datePicker = oEvent.getSource();
         const datePickerParent = datePicker.getParent().getMetadata().getName();
         switch (datePickerParent) {
@@ -172,73 +164,119 @@ sap.ui.define(
 
       // TaskList
 
-      onTaskDateChange(oEvent) {
-        const inputField = oEvent.getSource();
-        const value = inputField.getValue();
+      _onValidate() {
+        const oTable = this.byId("taskListTable");
+        const aItems = oTable.getItems();
+        let allValid = true;
 
-        this._validateDate(value, inputField);
+        // aItems.forEach((item) => {
+        //   debugger;
+        //   const taskName = item
+        //     .getBindingContext("data")
+        //     .getProperty("taskName");
+        //   const startDate = item
+        //     .getBindingContext("data")
+        //     .getProperty("startDate");
+        //   const endDate = item.getBindingContext("data").getProperty("endDate");
 
-        const oColumnListItem = inputField.getParent();
-        const oBindingContext = oColumnListItem.getBindingContext("task");
+        //   if (!taskName) {
+        //     // Если taskName пустое, подсветить его красным
+        //     // Код для подсветки taskName красным
+        //   }
 
-        const oStartDate = oColumnListItem.getCells()[3];
-        const oEndDate = oColumnListItem.getCells()[4];
+        //   if (!startDate) {
+        //     // Если startDate пустая, вызвать функцию onDateChange
+        //     // Код для вызова функции onDateChange
+        //     this.onDateChange(/* аргументы */);
+        //   }
 
-        if (oStartDate) {
-          oStartDate.setValueState(sap.ui.core.ValueState.None);
-        }
-        if (oEndDate) {
-          oEndDate.setValueState(sap.ui.core.ValueState.None);
-        }
-      },
+        //   if (!endDate) {
+        //     // Если endDate пустая, подсветить его красным
+        //     // Код для подсветки endDate красным
+        //   }
+        // });
+        aItems.forEach((oItem) => {
+          const oCells = oItem.getCells();
 
-      onTaskNameChange(oEvent) {
-        const sNewTaskName = oEvent.getParameter("value");
-        const oSource = oEvent.getSource();
-        const oItem = oSource.getParent();
-        const oContext = oItem.getBindingContext("task");
+          oCells.forEach((oCell) => {
+            debugger;
+            const sCellType = oCell.getMetadata().getElementName();
+            let sValue = "";
+            switch (sCellType) {
+              case "sap.m.Input": {
+                sValue = oCell.getValue().trim();
+                debugger;
+                break;
+              }
+              case "sap.m.Select": {
+                sValue = oCell.getSelectedKey().trim();
+                break;
+              }
+              case "sap.m.DatePicker": {
+                sValue = oCell.getDateValue();
+                break;
+              }
+            }
+            if (
+              sValue === "" ||
+              sValue === undefined ||
+              sValue === null ||
+              sValue === "0"
+            ) {
+              debugger;
+              oCell.setValueState(sap.ui.core.ValueState.Error);
+              oCell.setValueStateText("Ошибка ввода");
+              allValid = false;
+            } else {
+              oCell.setValueState(sap.ui.core.ValueState.None);
+            }
+          });
+          // const oTaskNameInput = oCells[0];
+          // const sTaskName = oTaskNameInput.getValue().trim();
+          // if (sTaskName === "") {
+          //   oTaskNameInput.setValueState(sap.ui.core.ValueState.Error);
+          //   oTaskNameInput.setValueStateText(
+          //     "Название задания не может быть пустым."
+          //   );
+          //   allValid = false;
+          // } else {
+          //   oTaskNameInput.setValueState(sap.ui.core.ValueState.None);
+          // }
 
-        if (sNewTaskName.trim() === "") {
-          oSource.setValueState(sap.ui.core.ValueState.Error);
-          oSource.setValueStateText("Название задания не может быть пустым.");
-        } else {
-          const oModel = this.getView().getModel("task");
-          oModel.setProperty("taskName", sNewTaskName, oContext);
-          oSource.setValueState(sap.ui.core.ValueState.None);
-        }
-      },
+          //   const oResponsibleInput = oCells[2].getItems()[0];
+          //   const sResponsible = oResponsibleInput.getValue().trim();
+          //   if (sResponsible === "") {
+          //     oResponsibleInput.setValueState(sap.ui.core.ValueState.Error);
+          //     oResponsibleInput.setValueStateText(
+          //       "Ответственный не может быть пустым."
+          //     );
+          //     allValid = false;
+          //   } else {
+          //     oResponsibleInput.setValueState(sap.ui.core.ValueState.None);
+          //   }
 
-      onTaskTypeChange(oEvent) {
-        const sSelectedTaskType = oEvent.getParameter("selectedItem")?.getKey();
-        if (!sSelectedTaskType) {
-          oEvent.getSource().setValueState(sap.ui.core.ValueState.Error);
-          oEvent
-            .getSource()
-            .setValueStateText("Тип задания должен быть выбран.");
-        } else {
-          const oSource = oEvent.getSource();
-          const oItem = oSource.getParent();
-          const oContext = oItem.getBindingContext("task");
+          //   const oStartDateInput = oCells[3];
+          //   const sStartDate = oStartDateInput.getValue().trim();
+          //   if (
+          //     sStartDate === null ||
+          //     sStartDate === undefined ||
+          //     sStartDate === ""
+          //   ) {
+          //     oStartDateInput.setValueState(sap.ui.core.ValueState.Error);
+          //     oStartDateInput.setValueStateText("Дата не может быть пустым.");
+          //     allValid = false;
+          //   }
 
-          const oModel = this.getView().getModel("task");
-          oModel.setProperty("taskType", sSelectedTaskType, oContext);
-          oSource.setValueState(sap.ui.core.ValueState.None);
-        }
-      },
-      onResponsibleChange(oEvent) {
-        const sNewResponsible = oEvent.getParameter("value");
-        const oSource = oEvent.getSource();
-        const oItem = oSource.getParent();
-        const oContext = oItem.getBindingContext("task");
+          //   const oEndDateInput = oCells[4];
+          //   const sEndDate = oEndDateInput.getValue().trim();
 
-        if (sNewResponsible.trim() === "") {
-          oSource.setValueState(sap.ui.core.ValueState.Error);
-          oSource.setValueStateText("значение не может быть пустым.");
-        } else {
-          const oModel = this.getView().getModel("task");
-          oModel.setProperty("responsible", sNewResponsible, oContext);
-          oSource.setValueState(sap.ui.core.ValueState.None);
-        }
+          //   if (sEndDate === null || sEndDate === undefined || sEndDate === "") {
+          //     oEndDateInput.setValueState(sap.ui.core.ValueState.Error);
+          //     oEndDateInput.setValueStateText("Дата не может быть пустым.");
+          //     allValid = false;
+          //   }
+        });
+        return allValid;
       },
 
       async onSettings() {
@@ -252,81 +290,26 @@ sap.ui.define(
 
       onSettingsDialogClose() {
         this.byId("settingsDialog").close();
-
-        // const oColumnVisibilityModel =
-        //   this.getView().getModel("columnVisibility");
-        // console.log(oColumnVisibilityModel);
-        // const oTable = Fragment.byId(
-        //   this.createId("TaskList"),
-        //   "taskListTable"
-        // );
-
-        // const aColumns = [
-        //   { name: "taskName", header: "Название Задачи" },
-        //   { name: "taskType", header: "Тип Задачи" },
-        //   { name: "responsible", header: "Ответственный" },
-        //   { name: "startDate", header: "Дата Начала" },
-        //   { name: "endDate", header: "Дата Завершения" },
-        // ];
-
-        // const aTableColumns = oTable.getColumns();
-
-        // console.log(aTableColumns);
-
-        // aColumns.forEach(({ name, header }) => {
-        //   console.log(name, header);
-        // });
-      },
-
-      async onOpenResponsibleDialog(oEvent) {
-        const oSource = oEvent.getSource();
-        const oContext = oSource.getBindingContext("task");
-        console.log(oContext);
-        this._selectedItemContext = oContext;
-        this.oResponsibleDialog ??= await this.loadFragment({
-          name: "ui5.testapp.view.fragments.ResponsibleDialog",
-        });
-        this.oResponsibleDialog.open();
-      },
-
-      onResponsibleSelect(oEvent) {
-        // TODO: Не обновляется диалогове окно при вызове другого
-        // если вызвать 2 диалога и нажать 2 одинаковых значения, то нажатие игнорируется
-        const oSelectedItem = oEvent.getParameter("listItem");
-        const setSelectedResponsible = oSelectedItem.getTitle();
-        console.log(setSelectedResponsible);
-        console.log(this._selectedItemContext);
-
-        if (this._selectedItemContext) {
-          const oModel = this.getView().getModel("task");
-          const oContextPath = this._selectedItemContext.getPath();
-          oModel.setProperty(
-            oContextPath + "/responsible",
-            setSelectedResponsible
-          );
-        }
-        this.onResponsibleCloseDialog();
-      },
-
-      onResponsibleCloseDialog() {
-        this.byId("responsibleDialog").close();
       },
 
       onAddData() {
         const oModel = this.getView().getModel("data");
         const aData = oModel.getProperty("/tasks") || [];
-
         const newItem = {
           taskName: "",
           taskType: "0",
-          responsible: "",
-          startDate: this._getCurrentDate(),
-          endDate: "",
+          responsible: "0",
+          startDate: new Date(),
+          endDate: null,
         };
 
         aData.unshift(newItem);
 
-        oModel.setProperty("/Tasks", aData);
+        oModel.setProperty("/tasks", aData);
+
+        if (this._onValidate() === true) {
+          MessageToast.show("validate true");
+        }
       },
 
       _getCurrentDate() {
@@ -381,12 +364,13 @@ sap.ui.define(
       },
 
       onSave() {
-        // TODO: не подсвечивает ошибку коненой даты
+        // TODO: доделать валидацию, на сохранении
         const oTable = this.byId("taskListTable");
-
-        const oModel = this.getView().getModel("data");
-        oModel.setProperty("/editMode", !oModel.getProperty("/editMode"));
-        MessageToast.show("Данные сохранены.");
+        if (this._onValidate()) {
+          const oModel = this.getView().getModel("data");
+          oModel.setProperty("/editMode", !oModel.getProperty("/editMode"));
+          MessageToast.show("Данные сохранены.");
+        }
       },
 
       _parseDate(dateStr) {
