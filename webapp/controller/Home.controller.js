@@ -6,13 +6,32 @@ sap.ui.define(
     "sap/ui/model/FilterOperator",
     "sap/ui/core/Fragment",
   ],
-  (Controller, MessageToast, Filter, FilterOperator, Fragment) => {
+  (Controller, MessageToast, Filter, FilterOperator) => {
     "use strict";
     return Controller.extend("ui5.testapp.controller.Home", {
       oHelpDialog: null,
       oResponsibleDialog: null,
 
-      onInit() {},
+      onInit() {
+        const oTaskModel = this.getOwnerComponent().getModel("data");
+        const aTaskData = oTaskModel.getData().tasks;
+        const sTaskLocalStorage = window.localStorage.getItem("tasks");
+        if (sTaskLocalStorage) {
+          try {
+            const aTaskLocalStorage = JSON.parse(sTaskLocalStorage);
+            const aTaskDataWithDates = aTaskLocalStorage.map((task) => ({
+              ...task,
+              startDate: new Date(task.startDate),
+              endDate: new Date(task.endDate),
+            }));
+            debugger;
+            oTaskModel.setProperty("/tasks", aTaskDataWithDates);
+          } catch (e) {
+            console.log(e);
+          }
+        }
+        debugger;
+      },
 
       // Filter
 
@@ -160,52 +179,51 @@ sap.ui.define(
             }
           }
         }
+        this.onValidate(oEvent);
       },
 
       // TaskList
 
-      _onValidate() {
+      onValidate(oEvent) {
+        const oField = oEvent.getSource();
+        const sFieldName = oField.getMetadata().getName();
+        let sValue;
+        debugger;
+        if (sFieldName === "sap.m.Select") {
+          sValue = oField.getSelectedKey();
+        } else {
+          sValue = oField.getValue();
+        }
+
+        if (
+          sValue === undefined ||
+          sValue === null ||
+          sValue === "" ||
+          sValue === "0"
+        ) {
+          debugger;
+          oField.setValueState(sap.ui.core.ValueState.Error);
+          oField.setValueStateText("Ошибка ввода");
+        } else {
+          debugger;
+          oField.setValueState(sap.ui.core.ValueState.None);
+        }
+      },
+
+      _validateAll() {
         const oTable = this.byId("taskListTable");
         const aItems = oTable.getItems();
         let allValid = true;
 
-        // aItems.forEach((item) => {
-        //   debugger;
-        //   const taskName = item
-        //     .getBindingContext("data")
-        //     .getProperty("taskName");
-        //   const startDate = item
-        //     .getBindingContext("data")
-        //     .getProperty("startDate");
-        //   const endDate = item.getBindingContext("data").getProperty("endDate");
-
-        //   if (!taskName) {
-        //     // Если taskName пустое, подсветить его красным
-        //     // Код для подсветки taskName красным
-        //   }
-
-        //   if (!startDate) {
-        //     // Если startDate пустая, вызвать функцию onDateChange
-        //     // Код для вызова функции onDateChange
-        //     this.onDateChange(/* аргументы */);
-        //   }
-
-        //   if (!endDate) {
-        //     // Если endDate пустая, подсветить его красным
-        //     // Код для подсветки endDate красным
-        //   }
-        // });
         aItems.forEach((oItem) => {
           const oCells = oItem.getCells();
 
           oCells.forEach((oCell) => {
-            debugger;
             const sCellType = oCell.getMetadata().getElementName();
             let sValue = "";
             switch (sCellType) {
               case "sap.m.Input": {
                 sValue = oCell.getValue().trim();
-                debugger;
                 break;
               }
               case "sap.m.Select": {
@@ -223,58 +241,14 @@ sap.ui.define(
               sValue === null ||
               sValue === "0"
             ) {
-              debugger;
               oCell.setValueState(sap.ui.core.ValueState.Error);
+              console.log(oCell.getMetadata());
               oCell.setValueStateText("Ошибка ввода");
               allValid = false;
             } else {
               oCell.setValueState(sap.ui.core.ValueState.None);
             }
           });
-          // const oTaskNameInput = oCells[0];
-          // const sTaskName = oTaskNameInput.getValue().trim();
-          // if (sTaskName === "") {
-          //   oTaskNameInput.setValueState(sap.ui.core.ValueState.Error);
-          //   oTaskNameInput.setValueStateText(
-          //     "Название задания не может быть пустым."
-          //   );
-          //   allValid = false;
-          // } else {
-          //   oTaskNameInput.setValueState(sap.ui.core.ValueState.None);
-          // }
-
-          //   const oResponsibleInput = oCells[2].getItems()[0];
-          //   const sResponsible = oResponsibleInput.getValue().trim();
-          //   if (sResponsible === "") {
-          //     oResponsibleInput.setValueState(sap.ui.core.ValueState.Error);
-          //     oResponsibleInput.setValueStateText(
-          //       "Ответственный не может быть пустым."
-          //     );
-          //     allValid = false;
-          //   } else {
-          //     oResponsibleInput.setValueState(sap.ui.core.ValueState.None);
-          //   }
-
-          //   const oStartDateInput = oCells[3];
-          //   const sStartDate = oStartDateInput.getValue().trim();
-          //   if (
-          //     sStartDate === null ||
-          //     sStartDate === undefined ||
-          //     sStartDate === ""
-          //   ) {
-          //     oStartDateInput.setValueState(sap.ui.core.ValueState.Error);
-          //     oStartDateInput.setValueStateText("Дата не может быть пустым.");
-          //     allValid = false;
-          //   }
-
-          //   const oEndDateInput = oCells[4];
-          //   const sEndDate = oEndDateInput.getValue().trim();
-
-          //   if (sEndDate === null || sEndDate === undefined || sEndDate === "") {
-          //     oEndDateInput.setValueState(sap.ui.core.ValueState.Error);
-          //     oEndDateInput.setValueStateText("Дата не может быть пустым.");
-          //     allValid = false;
-          //   }
         });
         return allValid;
       },
@@ -297,8 +271,8 @@ sap.ui.define(
         const aData = oModel.getProperty("/tasks") || [];
         const newItem = {
           taskName: "",
-          taskType: "0",
-          responsible: "0",
+          taskType: 0,
+          responsible: 0,
           startDate: new Date(),
           endDate: null,
         };
@@ -307,7 +281,7 @@ sap.ui.define(
 
         oModel.setProperty("/tasks", aData);
 
-        if (this._onValidate() === true) {
+        if (this._validateAll() === true) {
           MessageToast.show("validate true");
         }
       },
@@ -366,9 +340,15 @@ sap.ui.define(
       onSave() {
         // TODO: доделать валидацию, на сохранении
         const oTable = this.byId("taskListTable");
-        if (this._onValidate()) {
+        if (this._validateAll()) {
           const oModel = this.getView().getModel("data");
           oModel.setProperty("/editMode", !oModel.getProperty("/editMode"));
+          debugger;
+          window.localStorage.setItem(
+            "tasks",
+            JSON.stringify(oModel.getData().tasks)
+          );
+          debugger;
           MessageToast.show("Данные сохранены.");
         }
       },
