@@ -13,32 +13,27 @@ sap.ui.define(
       oResponsibleDialog: null,
 
       onInit() {
-        const oTaskModel = this.getOwnerComponent().getModel("data");
-        const aTaskData = oTaskModel.getData().tasks;
-        const sTaskLocalStorage = window.localStorage.getItem("tasks");
+        // TODO: не работает localstorage
+        debugger;
+        const oTaskModel = this.getOwnerComponent().getModel("employee");
+        const sTaskLocalStorage = window.localStorage.getItem("EMPLOYEE");
         if (sTaskLocalStorage) {
           try {
             const aTaskLocalStorage = JSON.parse(sTaskLocalStorage);
-            const aTaskDataWithDates = aTaskLocalStorage.map((task) => ({
-              ...task,
-              startDate: new Date(task.startDate),
-              endDate: new Date(task.endDate),
-            }));
-            debugger;
-            oTaskModel.setProperty("/tasks", aTaskDataWithDates);
+
+            oTaskModel.setProperty("employee", aTaskLocalStorage);
           } catch (e) {
             console.log(e);
           }
         }
-        debugger;
       },
 
       // Filter
 
       onClear() {
-        this.byId("taskNameField").setValue();
-        this.byId("typeSelect").setSelectedKey();
-        this.byId("responsibleSelect").setSelectedKey();
+        this.byId("LastNameField").setValue();
+        this.byId("FirstNameField").setValue();
+        this.byId("TitleField").setValue();
         this.byId("startDate").setValue();
         this.byId("startDate").setMinDate();
         this.byId("endDate").setValue();
@@ -82,15 +77,11 @@ sap.ui.define(
                   break;
                 }
                 case "sap.m.Select": {
-                  if (sPath === "typeSelect") sPath = "taskType/key";
-                  if (sPath === "responsibleFilter") sPath = "responsible/key";
-
                   oOperator = FilterOperator.EQ;
                   break;
                 }
                 case "sap.m.DatePicker": {
-                  if (sPath === "startDate") oOperator = FilterOperator.GE;
-                  if (sPath === "endDate") oOperator = FilterOperator.LE;
+                  oOperator = FilterOperator.LE;
                   break;
                 }
               }
@@ -267,7 +258,8 @@ sap.ui.define(
       },
 
       onAddData() {
-        const oModel = this.getView().getModel("data");
+        debugger;
+        const oModel = this.getView().getModel("employee");
         const aData = oModel.getProperty("/tasks") || [];
         const newItem = {
           taskName: "",
@@ -338,17 +330,12 @@ sap.ui.define(
       },
 
       onSave() {
-        // TODO: доделать валидацию, на сохранении
+        // TODO: тут записываются данные в localstorage
         const oTable = this.byId("taskListTable");
         if (this._validateAll()) {
-          const oModel = this.getView().getModel("data");
-          oModel.setProperty("/editMode", !oModel.getProperty("/editMode"));
-          debugger;
-          window.localStorage.setItem(
-            "tasks",
-            JSON.stringify(oModel.getData().tasks)
-          );
-          debugger;
+          const oModel = this.getView().getModel("employee");
+          const oData = oModel.oData;
+          window.localStorage.setItem("EMPLOYEE", JSON.stringify(oData));
           MessageToast.show("Данные сохранены.");
         }
       },

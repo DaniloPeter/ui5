@@ -6,6 +6,15 @@
     "title": "Test Application",
     "applicationVersion": {
       "version": "1.0.0"
+    },
+    "dataSources": {
+      "dataRemote": {
+        "uri": "V2/Northwind/Northwind.svc/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "2.0"
+        }
+      }
     }
   },
   "sap.ui": {
@@ -51,6 +60,10 @@
     },
     "contentDensities": { "cozy": true, "compact": false },
     "models": {
+      "employee": {
+        "dataSource": "dataRemote",
+        "type": "sap.ui.model.odata.v2.ODataModel"
+      },
       "responsible": {
         "type": "sap.ui.model.json.JSONModel",
         "uri": "Responsible.json"

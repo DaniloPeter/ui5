@@ -4,5 +4,8 @@
   "description": "The UI5 Test application",
   "scripts": {
     "start": "ui5 serve -o index.html"
+  },
+  "devDependencies": {
+    "ui5-middleware-simpleproxy": "^3.3.1"
   }
 }

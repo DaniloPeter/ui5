@@ -24,64 +24,47 @@
                         reset=".onReset"
                     >
                         <fb:filterGroupItems>
-                            <fb:FilterGroupItem name="taskName" label="Названия задачи"
-                                groupName="Tasks"
+                            <fb:FilterGroupItem name="LastName"
+                                groupName="Employees"
                                 visibleInFilterBar="true">
                                 <fb:control>
-                                    <Input id="taskNameField" placeholder="Названия задачи" />
+                                    <Input id="LastNameField" placeholder="Фамилия" />
                                 </fb:control>
                             </fb:FilterGroupItem>
 
-                            <fb:FilterGroupItem name="typeSelect" label="Тип задачи"
-                                groupName="Tasks"
+                            <fb:FilterGroupItem name="FirstName"
+                                groupName="Employees"
                                 visibleInFilterBar="true">
                                 <fb:control>
-                                    <Select forceSelection="false" id="typeSelect"
-                                        items="{
-                                        path: 'taskType>/TaskType'
-                                    }"
-                                        selectedKey="{data>/TaskType}">
-                                        <core:Item
-                                            key="{taskType>key}"
-                                            text="{taskType>name}" />
-                                    </Select>
+                                    <Input id="FirstNameField" placeholder="Имя" />
                                 </fb:control>
                             </fb:FilterGroupItem>
 
-                            <fb:FilterGroupItem name="responsibleFilter"
-                                label="Ответственный"
-                                visibleInFilterBar="true"
-                                groupName="Tasks">
+                            <fb:FilterGroupItem name="Title" 
+                                groupName="Employees"
+                                visibleInFilterBar="true">
                                 <fb:control>
-                                    <Select forceSelection="false" id="responsibleSelect"
-                                        items="{
-                                    path: 'responsible>/Responsible'
-                                }"
-                                        selectedKey="{data>/responsible}">
-                                        <core:Item
-                                            key="{responsible>key}"
-                                            text="{responsible>name}" />
-                                    </Select>
+                                    <Input id="TitleField" placeholder="Название" />
                                 </fb:control>
                             </fb:FilterGroupItem>
 
-                            <fb:FilterGroupItem name="startDate" label="Дата постановки задачи"
-                                visibleInFilterBar="true" groupName="Tasks">
+                            <fb:FilterGroupItem name="BirthDate"
+                                visibleInFilterBar="true" groupName="Employees">
                                 <fb:control>
                                     <DatePicker id="startDate"
                                         change=".onDateChange"
-                                        placeholder="Дата постановки задачи"
+                                        placeholder="Дата рождения"
                                         value="{data>/startDate}"
                                         displayFormat="dd.MM.yyyy" />
                                 </fb:control>
                             </fb:FilterGroupItem>
 
-                            <fb:FilterGroupItem name="endDate" label="Дата завершения задачи"
-                                visibleInFilterBar="true" groupName="Tasks">
+                            <fb:FilterGroupItem name="HireDate" 
+                                visibleInFilterBar="true" groupName="Employees">
                                 <fb:control>
                                     <DatePicker id="endDate"
                                         change="onDateChange"
-                                        placeholder="Дата завершения задачи"
+                                        placeholder="Дата начала работы"
                                         value="{data>/endDate}"
                                         displayFormat="dd.MM.yyyy" />
                                 </fb:control>
@@ -95,7 +78,7 @@
 
         <!-- Таблица задач -->
         <f:content>
-            <Table id="taskListTable" width="auto" items="{data>/tasks}">
+            <Table id="taskListTable" width="auto" items="{employee>/Employees}">
                 <headerToolbar>
                     <Toolbar>
                         <Title text="Задачи" />
@@ -108,60 +91,47 @@
                 </headerToolbar>
                 <columns>
                     <Column visible="{columnVisibility>/taskName}">
-                        <Text text="Название Задачи"  />
+                        <Text text="Фамилия"  />
                     </Column>
                     <Column visible="{columnVisibility>/taskType}">
-                        <Text text="Тип Задачи" />
+                        <Text text="Имя" />
                     </Column>
                     <Column visible="{columnVisibility>/responsible}">
-                        <Text text="Ответственный"/>
+                        <Text text="Название"/>
                     </Column>
                     <Column visible="{columnVisibility>/startDate}">
-                        <Text text="Дата Начала" />
+                        <Text text="Дата Рождения" />
                     </Column>
                     <Column visible="{columnVisibility>/endDate}">
-                        <Text text="Дата Завершения" />
+                        <Text text="Дата Приема" />
                     </Column>
                 </columns>
                 <items>
                     <ColumnListItem>
                         <cells>
-                            <Input editable="{= ${data>/editMode}}"
-                                value="{data>taskName}" change=".onValidate" />
-                            <Select id="taskType"
-                                change=".onValidate"
+                            <Input 
                                 editable="{= ${data>/editMode}}"
-                                items="{
-                                    path: 'taskType>/TaskType'
-                                }"
-                                selectedKey="{data>taskType}">
-                                <core:Item
-                                    key="{taskType>key}"
-                                    text="{taskType>name}" />
-                            </Select>
-                            <Select id="responsible"
-                                change=".onValidate"
+                                value="{employee>LastName}"/>
+                            <Input 
                                 editable="{= ${data>/editMode}}"
-                                items="{
-                                    path: 'responsible>/Responsible'
-                                }"
-                                selectedKey="{data>responsible}">
-                                <core:Item
-                                    key="{responsible>key}"
-                                    text="{responsible>name}" />
-                            </Select>
+                                value="{employee>FirstName}"/>
+                            <Input
+                                editable="{= ${data>/editMode}}"
+                                value="{employee>Title}"/>
                             <DatePicker
                                 id="startDateItem"
-                                dateValue="{data>startDate}"
+                                dateValue="{employee>BirthDate}"
                                 editable="{= ${data>/editMode}}"
-                                change=".onDateChange"
-                                displayFormat="dd.MM.yyyy" />
-                            <DatePicker
+                                change=".onDateChange2"
+                                displayFormat="dd.MM.yyyy"
+                            />
+                            <DatePicker                                
                                 id="endDateItem"
-                                dateValue="{data>endDate}"
                                 editable="{= ${data>/editMode}}"
-                                change=".onDateChange"
-                                displayFormat="dd.MM.yyyy" />
+                                change=".onDateChange2"
+                                displayFormat="dd.MM.yyyy"
+                                dateValue="{employee>HireDate}"
+                            />
                         </cells>
                     </ColumnListItem>
                 </items>
