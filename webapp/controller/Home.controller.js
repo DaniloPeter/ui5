@@ -258,24 +258,27 @@ sap.ui.define(
       },
 
       onAddData() {
-        debugger;
         const oModel = this.getView().getModel("employee");
-        const aData = oModel.getProperty("/tasks") || [];
-        const newItem = {
-          taskName: "",
-          taskType: 0,
-          responsible: 0,
-          startDate: new Date(),
-          endDate: null,
+
+        const newRecord = {
+          LastName: "test1",
+          FirstName: "test2",
+          Title: "Sales Representative",
+          BirthDate: new Date(),
+          HireDate: new Date(),
         };
 
-        aData.unshift(newItem);
+        oModel.create("/Employees", newRecord, {
+          success: (oData) => {
+            MessageToast.show("успешно");
+          },
+          error: (oError) => {
+            MessageToast.show("Ошибка");
+            console.error("Ошибка: ", oError);
+          },
+        });
 
-        oModel.setProperty("/tasks", aData);
-
-        if (this._validateAll() === true) {
-          MessageToast.show("validate true");
-        }
+        debugger;
       },
 
       _getCurrentDate() {
