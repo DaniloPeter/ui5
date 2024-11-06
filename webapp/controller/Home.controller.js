@@ -14,7 +14,7 @@ sap.ui.define(
 
       onInit() {
         // TODO: не работает localstorage
-        debugger;
+
         const oTaskModel = this.getOwnerComponent().getModel("employee");
         const sTaskLocalStorage = window.localStorage.getItem("EMPLOYEE");
         if (sTaskLocalStorage) {
@@ -115,7 +115,6 @@ sap.ui.define(
       },
 
       onDateChange(oEvent) {
-        debugger;
         const datePicker = oEvent.getSource();
         const datePickerParent = datePicker.getParent().getMetadata().getName();
         switch (datePickerParent) {
@@ -179,7 +178,7 @@ sap.ui.define(
         const oField = oEvent.getSource();
         const sFieldName = oField.getMetadata().getName();
         let sValue;
-        debugger;
+
         if (sFieldName === "sap.m.Select") {
           sValue = oField.getSelectedKey();
         } else {
@@ -192,11 +191,9 @@ sap.ui.define(
           sValue === "" ||
           sValue === "0"
         ) {
-          debugger;
           oField.setValueState(sap.ui.core.ValueState.Error);
           oField.setValueStateText("Ошибка ввода");
         } else {
-          debugger;
           oField.setValueState(sap.ui.core.ValueState.None);
         }
       },
@@ -259,6 +256,7 @@ sap.ui.define(
 
       onAddData() {
         const oModel = this.getView().getModel("employee");
+        const mHeaders = { "Content-ID": "1" };
 
         const newRecord = {
           LastName: "test1",
@@ -269,6 +267,7 @@ sap.ui.define(
         };
 
         oModel.create("/Employees", newRecord, {
+          headers: mHeaders,
           success: (oData) => {
             MessageToast.show("успешно");
           },
@@ -277,8 +276,56 @@ sap.ui.define(
             console.error("Ошибка: ", oError);
           },
         });
+      },
 
-        debugger;
+      onShowDeleteButton() {
+        const aDeletePromises = [];
+        const oModel = this.getView().getModel("employee");
+        const oDataModel = this.getView().getModel("data");
+        const bDeleteMode = oDataModel.getProperty("/deleteMode");
+
+        if (bDeleteMode) {
+          const oTable = this.byId("taskListTable");
+          const aItems = oTable.getItems();
+
+          aItems.forEach((oItem) => {
+            const oBindingContext = oItem.getBindingContext("employee");
+            const sPath = oBindingContext.getPath();
+            const aCells = oItem.getCells();
+            const oCheckBox = aCells.find((cell) =>
+              cell.sId.includes("DeleteCheckBox")
+            );
+            debugger;
+
+            if (oCheckBox.getSelected()) {
+              const deletePromise = new Promise((resolve, reject) => {
+                oModel.remove(sPath, {
+                  success: () => {
+                    resolve();
+                  },
+                  error: (oError) => {
+                    reject(oError);
+                  },
+                });
+              });
+              aDeletePromises.push(deletePromise);
+            }
+          });
+
+          Promise.all(aDeletePromises)
+            .then(() => {
+              MessageToast.show("отмеченные записи удалены");
+              this.onSearch();
+            })
+            .catch((oError) => {
+              MessageToast.show("Ошибка");
+              console.error("Ошибка: ", oError);
+            });
+
+          oDataModel.setProperty("/deleteMode", false);
+        } else {
+          oDataModel.setProperty("/deleteMode", true);
+        }
       },
 
       _getCurrentDate() {

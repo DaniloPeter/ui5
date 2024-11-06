@@ -14,6 +14,7 @@ sap.ui.define(
 
         const oData = {
           editMode: false,
+          deleteMode: false,
           visible: {
             taskName: true,
             taskType: true,

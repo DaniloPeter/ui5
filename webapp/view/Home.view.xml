@@ -85,6 +85,8 @@
                         <ToolbarSpacer />
                         <Button icon="sap-icon://add" id="addDataButton"
                             press=".onAddData" enabled="{= ${data>/editMode}}" />
+                        <Button icon="sap-icon://delete" id="deleteDataButton"
+                            press=".onShowDeleteButton" enabled="{= ${data>/editMode}}" />
                         <Button icon="sap-icon://action-settings" id="settingsButton"
                             press=".onSettings" enabled="{= !${data>/editMode}}" />
                     </Toolbar>
@@ -103,15 +105,18 @@
                         <Text text="Дата Рождения" />
                     </Column>
                     <Column visible="{columnVisibility>/endDate}">
-                        <Text text="Дата Приема" />
+                        <Text text="Дата Приема" /> 
+                    </Column>
+                    <Column visible="{data>/deleteMode}">
+                        <Text text="Удаление"  />
                     </Column>
                 </columns>
                 <items>
                     <ColumnListItem>
                         <cells>
                             <Input 
-                                editable="{= ${data>/editMode}}"
-                                value="{employee>LastName}"/>
+                            editable="{= ${data>/editMode}}"
+                            value="{employee>LastName}"/>
                             <Input 
                                 editable="{= ${data>/editMode}}"
                                 value="{employee>FirstName}"/>
@@ -131,7 +136,8 @@
                                 change=".onDateChange2"
                                 displayFormat="dd.MM.yyyy"
                                 dateValue="{employee>HireDate}"
-                            />
+                                />
+                                <CheckBox id="DeleteCheckBox"/>
                         </cells>
                     </ColumnListItem>
                 </items>
