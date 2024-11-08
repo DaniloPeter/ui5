@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "The UI5 Test application",
   "scripts": {
-    "start": "ui5 serve -o index.html"
+    "start": "ui5 serve -o mockServer/mockServer.html"
   },
   "devDependencies": {
     "ui5-middleware-simpleproxy": "^3.3.1"
