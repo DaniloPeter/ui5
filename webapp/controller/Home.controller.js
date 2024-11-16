@@ -256,24 +256,20 @@ sap.ui.define(
 
       onAddData() {
         const oModel = this.getView().getModel("employee");
-        const mHeaders = { "Content-ID": "1" };
+        debugger;
 
         const newRecord = {
           LastName: "test1",
           FirstName: "test2",
-          Title: "Sales Representative",
-          BirthDate: new Date(),
-          HireDate: new Date(),
         };
 
         oModel.create("/Employees", newRecord, {
-          headers: mHeaders,
           success: (oData) => {
-            MessageToast.show("успешно");
+            MessageToast.show("Successfully added: " + oData.LastName);
           },
           error: (oError) => {
-            MessageToast.show("Ошибка");
-            console.error("Ошибка: ", oError);
+            console.error("Error details:", oError);
+            MessageToast.show("Error adding a new record");
           },
         });
       },
