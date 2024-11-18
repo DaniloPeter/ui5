@@ -40,7 +40,7 @@
                                 </fb:control>
                             </fb:FilterGroupItem>
 
-                            <fb:FilterGroupItem name="Title" 
+                            <fb:FilterGroupItem name="Title"
                                 groupName="Employees"
                                 visibleInFilterBar="true">
                                 <fb:control>
@@ -59,7 +59,7 @@
                                 </fb:control>
                             </fb:FilterGroupItem>
 
-                            <fb:FilterGroupItem name="HireDate" 
+                            <fb:FilterGroupItem name="HireDate"
                                 visibleInFilterBar="true" groupName="Employees">
                                 <fb:control>
                                     <DatePicker id="endDate"
@@ -85,44 +85,46 @@
                         <ToolbarSpacer />
                         <Button icon="sap-icon://add" id="addDataButton"
                             press=".onAddData" enabled="{= ${data>/editMode}}" />
+                        <Button icon="sap-icon://edit" id="updateButton"
+                            press=".onUpdateData" enabled="{= ${data>/editMode}}" />
                         <Button icon="sap-icon://delete" id="deleteDataButton"
-                            press=".onShowDeleteButton" enabled="{= ${data>/editMode}}" />
+                            press=".onDeleteData" enabled="{= ${data>/editMode}}" />
                         <Button icon="sap-icon://action-settings" id="settingsButton"
                             press=".onSettings" enabled="{= !${data>/editMode}}" />
                     </Toolbar>
                 </headerToolbar>
                 <columns>
                     <Column visible="{columnVisibility>/taskName}">
-                        <Text text="Фамилия"  />
+                        <Text text="Фамилия" />
                     </Column>
                     <Column visible="{columnVisibility>/taskType}">
                         <Text text="Имя" />
                     </Column>
                     <Column visible="{columnVisibility>/responsible}">
-                        <Text text="Название"/>
+                        <Text text="Название" />
                     </Column>
                     <Column visible="{columnVisibility>/startDate}">
                         <Text text="Дата Рождения" />
                     </Column>
                     <Column visible="{columnVisibility>/endDate}">
-                        <Text text="Дата Приема" /> 
+                        <Text text="Дата Приема" />
                     </Column>
                     <Column visible="{data>/deleteMode}">
-                        <Text text="Удаление"  />
+                        <Text text="Удаление" />
                     </Column>
                 </columns>
                 <items>
                     <ColumnListItem>
                         <cells>
-                            <Input 
-                            editable="{= ${data>/editMode}}"
-                            value="{employee>LastName}"/>
-                            <Input 
-                                editable="{= ${data>/editMode}}"
-                                value="{employee>FirstName}"/>
                             <Input
                                 editable="{= ${data>/editMode}}"
-                                value="{employee>Title}"/>
+                                value="{employee>LastName}" />
+                            <Input
+                                editable="{= ${data>/editMode}}"
+                                value="{employee>FirstName}" />
+                            <Input
+                                editable="{= ${data>/editMode}}"
+                                value="{employee>Title}" />
                             <DatePicker
                                 id="startDateItem"
                                 dateValue="{employee>BirthDate}"
@@ -130,14 +132,14 @@
                                 change=".onDateChange2"
                                 displayFormat="dd.MM.yyyy"
                             />
-                            <DatePicker                                
+                            <DatePicker
                                 id="endDateItem"
                                 editable="{= ${data>/editMode}}"
                                 change=".onDateChange2"
                                 displayFormat="dd.MM.yyyy"
                                 dateValue="{employee>HireDate}"
-                                />
-                                <CheckBox id="DeleteCheckBox"/>
+                            />
+                            <CheckBox id="DeleteCheckBox" />
                         </cells>
                     </ColumnListItem>
                 </items>

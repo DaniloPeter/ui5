@@ -3,6 +3,8 @@ sap.ui.define(["sap/ui/core/util/MockServer"], (MockServer) => {
 
   return {
     init() {
+      const sEntityName = "Employees";
+
       const oMockServer = new MockServer({
         rootUri:
           sap.ui.require.toUrl("ui5/testapp") + "/V2/Northwind/Northwind.svc/",
@@ -18,29 +20,36 @@ sap.ui.define(["sap/ui/core/util/MockServer"], (MockServer) => {
       const sPath = sap.ui.require.toUrl("ui5/testapp/localService");
       oMockServer.simulate(sPath + "/metadata.xml", sPath + "/mockdata");
 
-      oMockServer.attachAfter("POST", function (oEvent) {
-        const oRequest = oEvent.getParameter("request");
-        const sPath = oRequest.getPath();
-        const oData = JSON.parse(oRequest.getBody());
+      oMockServer.attachAfter(
+        "POST",
+        function (oEvent) {
+          const { oXhr, oEntity } = oEvent.getParameters();
 
-        if (sPath.includes("/Employees")) {
-          const aEmployees = oMockServer.getEntities("Employees");
-          const iNewId = aEmployees.length
-            ? aEmployees[aEmployees.length - 1].EmployeeID + 1
-            : 1;
-          oData.EmployeeID = iNewId;
+          try {
+            const aEmployees = oMockServer.getEntitySetData("Employees");
+            debugger;
+            const iNewId = aEmployees.length
+              ? Math.max(...aEmployees.map((emp) => emp.EmployeeID)) + 1
+              : 1;
+            const oNewEmployee = { ...oEntity, EmployeeID: iNewId };
 
-          aEmployees.push(oData);
+            aEmployees.push(oNewEmployee);
+            oMockServer.sEntitySetData("Employees", aEmployees);
 
-          oEvent.getParameter("response").respondJSON(201, {
-            d: oData,
-          });
-        } else {
-          oEvent.getParameter("response").respondJSON(404, {
-            error: "Resource not found",
-          });
-        }
-      });
+            oXhr.respondJSON(
+              201,
+              {
+                "Content-Type": "application/json",
+              },
+              JSON.stringify(oNewEmployee)
+            );
+          } catch (e) {
+            console.error("Error while creating new employee:", e);
+            oXhr.respondJSON(400, {}, JSON.stringify({ e: e.message }));
+          }
+        },
+        "Employee"
+      );
 
       oMockServer.start();
     },

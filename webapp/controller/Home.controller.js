@@ -256,22 +256,81 @@ sap.ui.define(
 
       onAddData() {
         const oModel = this.getView().getModel("employee");
-        debugger;
 
         const newRecord = {
-          LastName: "test1",
-          FirstName: "test2",
+          EmployeeID: 10,
+          LastName: "John",
+          FirstName: null,
+          Title: null,
+          TitleOfCourtesy: null,
+          BirthDate: new Date(),
+          HireDate: new Date(),
+          Address: null,
+          City: null,
+          Region: null,
+          PostalCode: null,
+          Country: null,
+          HomePhone: null,
+          Extension: null,
+          Notes: null,
+          ReportsTo: null,
         };
+        // const oData = oModel.getData("/");
 
         oModel.create("/Employees", newRecord, {
           success: (oData) => {
-            MessageToast.show("Successfully added: " + oData.LastName);
+            MessageToast.show("Запись добавлена.");
           },
           error: (oError) => {
-            console.error("Error details:", oError);
-            MessageToast.show("Error adding a new record");
+            MessageToast.show("Ошибка при добавлении записи.");
+            console.error(oError);
           },
         });
+      },
+
+      onUpdateData() {
+        const oModel = this.getView().getModel("employee");
+
+        const updatedRecord = {
+          EmployeeID: 2,
+          LastName: "UpdateTest",
+          FirstName: "UpdateTestname",
+          BirthDate: new Date(),
+          HireDate: new Date(),
+        };
+
+        oModel.update("/Employees(2)", updatedRecord, {
+          success: (oData) => {
+            MessageToast.show("Запись обновлена.");
+          },
+          error: (oError) => {
+            MessageToast.show("Ошибка при обновлении записи.");
+            console.error(oError);
+          },
+        });
+      },
+
+      onDeleteData() {
+        const oModel = this.getView().getModel("employee");
+
+        oModel.remove("/Employees(3)", {
+          success: () => {
+            MessageToast.show("Запись удалена.");
+          },
+          error: (oError) => {
+            MessageToast.show("Ошибка при удалении записи.");
+            console.error(oError);
+          },
+        });
+      },
+
+      _getCurrentDate() {
+        const now = new Date();
+        const day = String(now.getDate()).padStart(2, "0");
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const year = now.getFullYear();
+
+        return `${day}.${month}.${year}`;
       },
 
       onShowDeleteButton() {
