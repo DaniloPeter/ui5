@@ -6,7 +6,6 @@
     xmlns:f="sap.f"
     xmlns:fb="sap.ui.comp.filterbar"
     displayBlock="true">
-
     <f:DynamicPage showFooter="true" id="homePage" headerPinned="true">
         <f:header>
             <f:DynamicPageHeader pinnable="true">
@@ -31,15 +30,14 @@
                                     <Input id="LastNameField" placeholder="Фамилия" />
                                 </fb:control>
                             </fb:FilterGroupItem>
-
                             <fb:FilterGroupItem name="FirstName"
                                 groupName="Employees"
                                 visibleInFilterBar="true">
                                 <fb:control>
-                                    <Input id="FirstNameField" placeholder="Имя" />
+                                    <Input id="FirstNameField" value="{data>/testValue}"
+                                        placeholder="Имя" />
                                 </fb:control>
                             </fb:FilterGroupItem>
-
                             <fb:FilterGroupItem name="Title"
                                 groupName="Employees"
                                 visibleInFilterBar="true">
@@ -47,7 +45,6 @@
                                     <Input id="TitleField" placeholder="Название" />
                                 </fb:control>
                             </fb:FilterGroupItem>
-
                             <fb:FilterGroupItem name="BirthDate"
                                 visibleInFilterBar="true" groupName="Employees">
                                 <fb:control>
@@ -58,7 +55,6 @@
                                         displayFormat="dd.MM.yyyy" />
                                 </fb:control>
                             </fb:FilterGroupItem>
-
                             <fb:FilterGroupItem name="HireDate"
                                 visibleInFilterBar="true" groupName="Employees">
                                 <fb:control>
@@ -69,13 +65,11 @@
                                         displayFormat="dd.MM.yyyy" />
                                 </fb:control>
                             </fb:FilterGroupItem>
-
                         </fb:filterGroupItems>
                     </fb:FilterBar>
                 </f:content>
             </f:DynamicPageHeader>
         </f:header>
-
         <!-- Таблица задач -->
         <f:content>
             <Table id="taskListTable" width="auto" items="{employee>/Employees}">
@@ -150,6 +144,4 @@
                 type="XML" />
         </f:footer>
     </f:DynamicPage>
-
-
 </mvc:View>

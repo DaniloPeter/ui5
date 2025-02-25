@@ -60,6 +60,16 @@
     },
     "contentDensities": { "cozy": true, "compact": false },
     "models": {
+      "manifestData": {
+        "type": "sap.ui.model.json.JSONModel",
+        "settings": {
+          "one": 1,
+          "two": 2.0,
+          "three": "three",
+          "four": "4",
+          "five": "05.01.2013"
+        }
+      },
       "employee": {
         "dataSource": "dataRemote",
         "type": "sap.ui.model.odata.v2.ODataModel"

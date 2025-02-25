@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "description": "The UI5 Test application",
   "scripts": {
-    "start": "ui5 serve -o mockServer/mockServer.html"
+    "start": "ui5 serve -o mockServer/mockServer.html",
+    "test": "ui5 serve -o test/unit/unitTests.qunit.html"
   },
   "devDependencies": {
+    "qunit": "^2.24.1",
+    "sinon": "^19.0.2",
     "ui5-middleware-simpleproxy": "^3.3.1"
   }
 }

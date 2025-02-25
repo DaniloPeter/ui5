@@ -30,14 +30,35 @@ sap.ui.define(
 
       // Filter
 
+      onTestPress(oEvent) {
+        const oModel = this.getOwnerComponent().getModel("data");
+        const oData = oModel.getData();
+
+        const newValue = oData.testValue === "Text" ? "Button" : "Text";
+        oModel.setProperty("/testValue", newValue);
+      },
+      onTestManifestPress(oEvent) {
+        const oModel = this.getOwnerComponent().getModel("manifestData");
+        const oData = oModel.getData();
+
+        const newValue = oData.three === "Text" ? "Button" : "Text";
+        oModel.setProperty("/three", newValue);
+      },
+
       onClear() {
-        this.byId("LastNameField").setValue();
-        this.byId("FirstNameField").setValue();
-        this.byId("TitleField").setValue();
-        this.byId("startDate").setValue();
-        this.byId("startDate").setMinDate();
-        this.byId("endDate").setValue();
-        this.byId("endDate").setMaxDate();
+        this.byId("LastNameField").setValue("");
+        this.byId("FirstNameField").setValue("");
+        this.byId("TitleField").setValue("");
+        this.byId("startDate").setValue("");
+        this.byId("startDate").setMinDate(null);
+        this.byId("endDate").setValue("");
+        this.byId("endDate").setMaxDate(null);
+        const oModel = this.getView().getModel("data");
+        if (oModel) {
+          oModel.setProperty("/testValue", ""); // Очистка testValue
+          oModel.setProperty("/startDate", null); // Очистка startDate
+          oModel.setProperty("/endDate", null); // Очистка endDate
+        }
       },
 
       onSearch() {
@@ -256,7 +277,7 @@ sap.ui.define(
 
       onAddData() {
         const oModel = this.getView().getModel("employee");
-
+        debugger;
         const newRecord = {
           EmployeeID: 10,
           LastName: "John",
@@ -402,6 +423,7 @@ sap.ui.define(
       },
 
       onExport() {
+        debugger;
         const oTable = this.byId("taskListTable");
         const header = [];
         const aTableColumns = oTable.getColumns();
@@ -456,8 +478,8 @@ sap.ui.define(
       },
 
       onEdit(oEvent) {
-        this.onReset(oEvent);
-        MessageToast.show("edit");
+        // this.onReset(oEvent);
+        // MessageToast.show("edit");
         const oModel = this.getView().getModel("data");
         oModel.setProperty("/editMode", !oModel.getProperty("/editMode"));
 
